@@ -1,0 +1,10 @@
+.centered{
+    margin:auto;
+    width:70%;
+    text-align:center;
+    vertical-align:middle;
+}
+
+body{
+    background-color:grey;
+}

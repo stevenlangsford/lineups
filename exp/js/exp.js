@@ -1,35 +1,24 @@
-/*global $ */
+//Instructions, demographics questions, thank you message, and the definition of saveData lives here
+//Basically, everything that's not the task itself.
 
-function finishExperiment() {
-  /*
-  * function called when the subject clicks Done
-  *
-  * This function reads the responses the subject gives
-  * and passes those responses to the function saveData
-  * 
-  * This function then hides the experiment and displays a "Thank you" message
-  */
-  
-  var responses = $('form').serializeArray();
-  saveData(responses);
-  
-  $('#experiment').hide();
-  $('#message').text("Thank you for completing the experiment!");
+var instructionchapters = ["Instructions part one: this is a study","In this study you will do stuff"];
+var instructioncounter = 0;
+
+function instructions(){
+if(instructioncounter>=instructionchapters.length){demographics(); return;}
+document.getElementById("uberdiv").innerHTML=instructionchapters[instructioncounter]+"<br/><button onclick=instructions()>Next</button>";
+instructioncounter++;
+}
+
+function demographics(){
+document.getElementById("uberdiv").innerHTML="Some demographic questions<br/><button onclick=nextTrial()>Next</button>";
+}
+
+function finish(){
+document.getElementById("uberdiv").innerHTML="You're done! Thank you for participating!";
 }
 
 function saveData(data) {
-  /*
-  * write a new row to the database
-  *
-  * data: a dictionary composed of key, value pairs
-  *       containing all the info to write to the database
-  *
-  * an anonymous function is used because it creates a
-  * copy of all information in the data variable, 
-  * thus if any other functions change the data object after this function executes
-  * then the information written to the database does not change.
-  */
-
   (function (d) {
     $.post('submit',  {"content": JSON.stringify(d)});
   })(data);
