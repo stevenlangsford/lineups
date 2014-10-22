@@ -1,6 +1,6 @@
 //display params
-var canvasheight = 50;//500; //might refuse to display anything at all in testStim if canvas is too big? Mystery?
-var canvaswidth = 50;//500
+var canvasheight = 470;//500; //might refuse to display anything at all in testStim if canvas is too big? Mystery?
+var canvaswidth = 380;//500
 
 
 var nextButtonFn; //needs to be at top level to be visible to a button, used in onclick. Function body set just-in-time by studyStim objects.
@@ -24,7 +24,7 @@ function studyStim(imgFile,targDiv,loadDelay,presentationTime){
       var context = canvas.getContext('2d');
       var imageObj = new Image();
       imageObj.onload = function() {
-          context.drawImage(imageObj,0,0);//drawImage(imageobject, x, y,width,height) width and height are optional, if ommited uses image width/height. 
+          context.drawImage(imageObj,0,0,canvaswidth,canvasheight);//drawImage(imageobject, x, y,width,height) width and height are optional, if ommited uses image width/height. 
       };
 	imageObj.src = "stim/"+picfile; // assuming a file structure: index.html in with stim folder.
     }
