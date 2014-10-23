@@ -1,9 +1,15 @@
 
-var aphoto=lineups[22][0];
-var bob = new studyStim(aphoto,'uberdiv',500,1000); //imgFile,targDiv,loadDelay,presentationTime
-bob.init();
+
+//nextTrial(); //training stim. Displays ok, haven't run through to finish() yet.
+
+//for(var i=0;i<lineups.length;i++){
+//document.write("<div id='lup"+i+"'></div>");
+//new testStim(lineups[i],"lup"+i,"presentabsent").init();
+//}
 
 
-//var bill = new testStim([1,2,3,4,5,6],'uberdiv','presentabsent','a','b'); //lineupImgs,targDiv,condition, lineupname, targID
-//bill.init();
-//console.log('done');
+// // testStim(lineupImgs,targDiv,condition){
+var bill = new testStim(lineups[Math.round(Math.random()*lineups.length)],'uberdiv',"nominate");
+bill.init();
+
+console.log('done');

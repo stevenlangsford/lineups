@@ -1,4 +1,5 @@
 //Line up is position in array (+1), individual photos in order,File 1,File 2,File 3,File 4,File 5,File 6,
+///lineups 1,2,and 14 (positions 0, 1, and 13) in the array are Bad Lineups: images don't display properly. Thank god only 80 are needed. Don't touch them here to preserve the correspondence between position in array and lineup number in the excel file provided, but don't use these. (bad done in training
 var lineups = [
 ["f_wt_yg_lg_bl_bn_ngl.jpg","f_wt_yg_lg_bl_bn_ngl2.jpg","f_wt_yg_lg_bl_bn_ngl3.jpg","f_wt_yg_lg_bl_bn_ngl4.jpg","f_wt_yg_lg_bl_bn_ngl6.jpg","f_wt_yg_lg_bl_bn_ngl9.jpg"],
 ["f_wt_yg_st_rd_bn_ngl.jpg","f_wt_yg_st_rd_bu_ngl.jpg","f_wt_yg_st_rd_bu_ngl2.jpg","F_wt_yg_st_rd_gn_ngl.jpg","F_wt_yg_st_rd_gn_ngl2.jpg","f_wt_yg_st_rd_gn_ngl3.jpg"],
