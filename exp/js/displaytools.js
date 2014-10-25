@@ -46,9 +46,10 @@ function studyStim(imgFile,targDiv,loadDelay,presentationTime){
     }
 
     this.init= function(){//init is only contact with outside world
-	document.getElementById(targDiv).innerHTML="<button onclick=nextButtonFn()>Next Face</button>";
+	document.getElementById(targDiv).innerHTML="<button onclick=nextButtonFn()>Next Face</button></br>";
 	nextButtonFn = function(){
-	    interstim_intervals.push(new Date().getTime());
+	    interstim_intervals.push(new Date().getTime()-lastClick);
+	    lastClick=new Date().getTime();
 	    functionChain([
 		function(){placeCanvas()},
 		function(){fixation()},
@@ -63,6 +64,17 @@ function studyStim(imgFile,targDiv,loadDelay,presentationTime){
 }//end of studyStim displayer object
 
 var testResponseFn; //At this level to be visible to buttons, function body set just-in-time by testStim objects
+
+function confratingFn(){
+    if($('input[name="conf"]:checked').val()==undefined){
+	alert("Please give a confidence rating to continue.");
+	return;
+    }
+    else{
+	confRatings.push($('input[name="conf"]:checked').val());
+	nextTest();
+    }
+}
 
 function testStim(lineupImgs,targDiv,condition){
     //lineup should be an array of images (here, 6 long). Condition should be one of 'presentabsent','mostlikely','nominate'
@@ -80,10 +92,11 @@ function testStim(lineupImgs,targDiv,condition){
 	"<td><input type=\"radio\" name=\"conf\" id=\"conf3\" value=\"3\"/></td>"+
 	"<td><input type=\"radio\" name=\"conf\" id=\"conf4\" value=\"4\"/></td>"+
 	"</tr>"+
-	"<tr><td colspan=5 style='text-align:center'><button onclick='nextTest()'>Next</button></tr>"+
+	"<tr><td colspan=5 style='text-align:center'><button onclick='confratingFn()'>Next</button></tr>"+
 	"</table>";
     
     this.init=function(){
+	testStimLoadTime = new Date().getTime();
 	function drawPic(picfile, canvasID){//canvas id's are 'canvas0' through 'canvas5'
 	    var canvas = document.getElementById(canvasID);
 	    var context = canvas.getContext('2d');
@@ -122,7 +135,7 @@ function testStim(lineupImgs,targDiv,condition){
 	    lineupTable+="<button onclick='testResponseFn(\"yes\")'>Yes</br>There is a face that was shown before in this lineup</button></h3>";
 	    lineupTable+="<button onclick='testResponseFn(\"no\")'>No</br>There is no face that was shown before in this lineup</button></h3>";
 	    testResponseFn=function(response){
-		inspection_intervals.push(new Date().getTime());
+		inspection_intervals.push(new Date().getTime()-testStimLoadTime);
 		responses.push(response);
 		document.getElementById('uberdiv').innerHTML=confratingHTML;
 	    }
@@ -143,8 +156,14 @@ function testStim(lineupImgs,targDiv,condition){
 	    lineupTable+="<tr><td colspan='"+lineuplength+"'><button onclick='testResponseFn()'>Next</button></tr>";
 	    
 	    testResponseFn=function(){
+
+		if($('input[name="response"]:checked').val()==undefined){
+		    alert("Please make a selection before continuing");
+		    return;
+		}
+
 		responses.push($('input[name="response"]:checked').val());
-		inspection_intervals.push(new Date().getTime());
+		inspection_intervals.push(new Date().getTime()-testStimLoadTime);
 		document.getElementById('uberdiv').innerHTML=confratingHTML;
 	    }	
 	}

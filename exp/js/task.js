@@ -19,13 +19,14 @@ var displaytime= [];
 while(displaytime.length<hm_trainingfaces){displaytime.push(short_displaytime); displaytime.push(long_displaytime);}
 shuffle(displaytime);
 
-var interstim_intervals=[];//Times (millis since 1970) pushed to this by trainingstim objects every time the 'next' button is hit.
+var lastClick; //stores a time since 1970, used by studystim objects to calculate interstim_intervals
+var interstim_intervals=[];//Records 'deliberation time', interval between clicks of the 'next' button
 
 var trialcounter = 0;
 
 function nextTrial(){
     if(trialcounter==hm_trainingfaces){
-	finish();//finish() is defined in 'preamble.js', because it's an admin/wrapper sort of thing.
+	finishTraining();//finishTraining() is defined in 'preamble.js', because it's an admin/wrapper sort of thing.
     //SAVE DATA HERE
     }
     else{
@@ -36,16 +37,19 @@ function nextTrial(){
 }
 
 //TEST TASK
-var condition = ["presentabsent"];//shuffle(["presentabsent","mostlikely","nominate"]);//TODO set from participantID key (in preamble.js)
-var inspection_intervals=[]; //Times (millis since 1970) pushed to this by teststim objects every time a response is recorded.
+var condition = shuffle(["presentabsent","mostlikely","nominate"])[0];//TODO set from participantID key (in preamble.js)
+var inspection_intervals=[]; //Records time between test item loading and the next button being hit.
 var responses = []; //responses pushed here by teststim objects
+var confRatings = [];
 var testCounter = 0;
+
+var testStimLoadTime; //set on init, inspection_interval is the difference between this and when 'next' is clicked.
 
 function nextTest(){
 
-if(testCounter==lineupID.length)finish(); //note since the page has been re-loaded, lineupID is not the same shuffle as in training. 
+if(testCounter==lineupID.length)finishTest(); //note since the page has been re-loaded, lineupID is not the same shuffle as in training. 
 else{
-    new testStim(lineups[lineupID[testCounter]],"uberdiv",condition[0]).init();
+    new testStim(lineups[lineupID[testCounter]],"uberdiv",condition).init();
 };
 testCounter++;
 }
