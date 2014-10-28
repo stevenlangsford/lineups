@@ -9,7 +9,7 @@ function studyStim(imgFile,targDiv,loadDelay,presentationTime){
 
     //tools/helper functions
     function functionChain(fns, times){
-	//functionChain calls each function in an array fns, in order with delays specified by times.
+	//functionChain calls each function in an array fns, in order with post-call delays specified by times.
 	if(fns.length-1!=times.length)console.error("Mismatching fns and times passed to functionChain");
 	function fncaller(callindex){
 	    if(callindex>=fns.length)return;
@@ -18,25 +18,42 @@ function studyStim(imgFile,targDiv,loadDelay,presentationTime){
 	}
 	fncaller(0);
     }
-    
-    function drawPic(picfile){
-	var canvas = document.getElementById('stimCanvas');
-	var context = canvas.getContext('2d');
-	var imageObj = new Image();
-	imageObj.onload = function() {
-            context.drawImage(imageObj,0,0,canvaswidth,canvasheight);//drawImage(imageobject, x, y,width,height) width and height are optional, if ommited uses image width/height. 
-	};
-	imageObj.src = "stim/"+picfile; // assuming a file structure: index.html in with stim folder.
-    }
-    //events that happen in sequence in the presentation of a study stim, wrapped up as functions just so they can be passed to functionChain in a nice human-readable way.
-    function placeCanvas(){
-	document.getElementById(targDiv).innerHTML="<canvas id='stimCanvas' height='"+canvasheight+"' width='"+canvaswidth+"'></canvas>";
-    }
-    function fixation(){
-	drawPic("fixationdot.jpg");
-    }
-    function showStim(){
-	drawPic(imgFile);
+
+    function drawPicChain(picfiles,displaytimes){
+	var imageObjs = [];
+	var imageDrawerFns = [];
+
+	var flag = 0;//counts how many images have run their onload function. Only show the sequence of images after they've all loaded.
+	function startflag(){
+	    if(flag==picfiles.length-1){
+		imageDrawerFns.push(function(){clearStim()});
+		displaytimes.push(presentationTime);
+		functionChain(imageDrawerFns,displaytimes);
+	    }
+	    else{
+		console.log(flag);
+		flag++;
+	    }
+	}
+	for(var i=0;i<picfiles.length;i++){
+	    imageObjs[i]= new Image();
+	    imageObjs[i].src="stim/"+picfiles[i];
+	    imageObjs[i].onload = function(){
+		startflag();
+	    }
+	    ifixer = function(ani){
+		return function(){
+		    console.log(ani+"::"+imageObjs[ani]);
+		    var canvas = document.getElementById('stimCanvas');
+		    var context = canvas.getContext('2d');
+		    context.drawImage(imageObjs[ani],0,0,canvaswidth,canvasheight);
+		    console.log("drawing image "+ani);
+		}
+
+	    }
+	    imageDrawerFns.push(ifixer(i)); //if you don't use a function creating function to fix i, i continues to refer to the loop index (which keeps incrementing and will probably be at the end-value by the time the function runs.)
+	}
+	
     }
     function clearStim(){
 	var canvas = document.getElementById("stimCanvas");
@@ -47,17 +64,12 @@ function studyStim(imgFile,targDiv,loadDelay,presentationTime){
 
     this.init= function(){//init is only contact with outside world
 	document.getElementById(targDiv).innerHTML="<button onclick=nextButtonFn()>Next Face</button></br>";
+	
 	nextButtonFn = function(){
 	    interstim_intervals.push(new Date().getTime()-lastClick);
 	    lastClick=new Date().getTime();
-	    functionChain([
-		function(){placeCanvas()},
-		function(){fixation()},
-		function(){showStim()},
-		function(){clearStim()}
-	    ],
-			  [0,loadDelay,presentationTime]
-			 );
+	    document.getElementById(targDiv).innerHTML="<canvas id='stimCanvas' height='"+canvasheight+"' width='"+canvaswidth+"'></canvas>";
+	    drawPicChain(["fixationdot.jpg",imgFile],[500]);
 	}
 	// onclick is functionChain([placeCanvas,fixation,showstim, clearstim],[10,loadDelay,presentationTime])
     }
@@ -80,6 +92,8 @@ function testStim(lineupImgs,targDiv,condition){
     //lineup should be an array of images (here, 6 long). Condition should be one of 'presentabsent','mostlikely','nominate'
     //Should record lineupID, targID (0 if not present), confidence rating, inspection time
     //displayme function is called 'init' for consistency with studyStim
+
+    document.getElementById('uberdiv').style.top="0%";//Hmm, bad place to do this? :-(
 
     var confratingHTML = ""+
 	"<table class='centered'>"+
@@ -111,11 +125,11 @@ function testStim(lineupImgs,targDiv,condition){
 	var lineupTable = "<table class='testTable'>";
 	
 	var lineuplength = lineupImgs.length;
-	if(condition=="nominate")lineuplength=lineuplength+1;//leave space for 'not present' response.
+	//if(condition=="nominate")lineuplength=lineuplength+1;//leave space for 'not present' response.
 
 	//set question by condition
 	lineupTable+="<tr>";
-	lineupTable+="<td colspan="+lineupImgs.length+">";
+	lineupTable+="<td colspan="+(lineupImgs.length/2)+">";
 	if(condition=="presentabsent") lineupTable+="<h3>Does this lineup contain a face you were shown in the study phase?</h3>";
 	if(condition=="mostlikely") lineupTable+="<h3>Which of these faces is most likely to be one you were shown in the study phase?</h3>";
 	if(condition=="nominate") lineupTable+="<h3>Please indicate which of these faces you saw in the study phase, or 'No match' if none of them were shown.</h3>";
@@ -124,49 +138,63 @@ function testStim(lineupImgs,targDiv,condition){
 
 	
 	for(var i = 0;i<lineuplength;i++){
-	    lineupTable+="<td><canvas id='"+targDiv+"canvas"+i+"' height='"+canvasheight+"' width='"+canvaswidth+"'></canvas></td>";
+	    lineupTable+="<td>"+
+		"<canvas id='"+targDiv+"canvas"+i+"' height='"+canvasheight+"' width='"+canvaswidth+"'></canvas></br>";
+	    if(condition=="mostlikely"||condition=="nominate"){
+		lineupTable+="Face "+(i+1)+"</br>";
+		lineupTable+="<input type='radio' name='response' id='response"+i+"' value='"+(i+1)+"'></td>"; //value 1-6, 0=absent
+	    }
+	    lineupTable+="</td>";
+
+	    if(i==lineuplength/2-1)lineupTable+="</tr><tr><td colspan='"+(lineuplength/2)+"'>&nbsp</td></tr><tr>";//3x2 presentation
 	}
 	lineupTable+="</tr>";
 
 	//Set response option by condition
 	if(condition=="presentabsent") {
 	    lineupTable+="<tr>";
-	    lineupTable+="<td colspan="+lineupImgs.length+">";
+	    lineupTable+="<td colspan="+(lineupImgs.length/2)+">";
 	    lineupTable+="<button onclick='testResponseFn(\"yes\")'>Yes</br>There is a face that was shown before in this lineup</button></h3>";
 	    lineupTable+="<button onclick='testResponseFn(\"no\")'>No</br>There is no face that was shown before in this lineup</button></h3>";
+	    
 	    testResponseFn=function(response){
 		inspection_intervals.push(new Date().getTime()-testStimLoadTime);
 		responses.push(response);
 		document.getElementById('uberdiv').innerHTML=confratingHTML;
 	    }
 	    lineupTable+="</td></tr>"
-	}
-	if(condition=="mostlikely"||condition=="nominate"){
-	    lineupTable+="<tr>";
-	    for(var i = 0;i<lineuplength;i++){
-		if(i==6)lineupTable+="<td>No match</td>";
-		else lineupTable+="<td>Face "+(i+1)+"</td>";
-	    }
-	    lineupTable+="</tr>";
-	    lineupTable+="<tr>";
-	    for(var i = 0;i<lineuplength;i++){
-		lineupTable+="<td><input type='radio' name='response' id='response"+i+"' value='"+(i+1)%lineuplength+"'></td>"; //value 1-6, 0=absent
-	    }
-	    lineupTable+="</tr>";
-	    lineupTable+="<tr><td colspan='"+lineuplength+"'><button onclick='testResponseFn()'>Next</button></tr>";
-	    
-	    testResponseFn=function(){
+	}//end if condition=presentabsent
 
-		if($('input[name="response"]:checked').val()==undefined){
-		    alert("Please make a selection before continuing");
-		    return;
-		}
+	 if(condition=="mostlikely"||condition=="nominate"){
+	//     lineupTable+="<tr>";
+	//     for(var i = 0;i<lineuplength;i++){
+	// 	if(i==6)lineupTable+="<td>No match</td>";
+	// 	else lineupTable+="<td>Face "+(i+1)+"</td>";
+	//     }
+	//     lineupTable+="</tr>";
+	//     lineupTable+="<tr>";
+	//     for(var i = 0;i<lineuplength;i++){
+	// 	lineupTable+="<td><input type='radio' name='response' id='response"+i+"' value='"+(i+1)%lineuplength+"'></td>"; //value 1-6, 0=absent
+	//     }
+	//     lineupTable+="</tr>";
+	if(condition=="nominate"){
+	    lineupTable+="<tr><td colspan='"+(lineuplength/2)+"'>No match</br><input type='radio' name='response' id='response0' value='0'></td></tr>";	    
+	}
+	     
+	     lineupTable+="<tr><td colspan='"+lineuplength+"'><button onclick='testResponseFn()'>Next</button></tr>";
+	     
+	     testResponseFn=function(){
+		 
+		 if($('input[name="response"]:checked').val()==undefined){
+		     alert("Please make a selection before continuing");
+		     return;
+		 }
 
 		responses.push($('input[name="response"]:checked').val());
 		inspection_intervals.push(new Date().getTime()-testStimLoadTime);
 		document.getElementById('uberdiv').innerHTML=confratingHTML;
 	    }	
-	}
+	}//end if condition==mostlikely||condition==nominate
 	lineupTable+="</tr>";
 	lineupTable+="</table>";
 
