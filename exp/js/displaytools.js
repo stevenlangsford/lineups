@@ -109,19 +109,6 @@ function testStim(lineupImgs,targDiv,condition){
 	"<tr><td colspan=5 style='text-align:center'><button onclick='confratingFn()'>Next</button></tr>"+
 	"</table>";
     
-    this.init=function(){
-	testStimLoadTime = new Date().getTime();
-	function drawPic(picfile, canvasID){//canvas id's are 'canvas0' through 'canvas5'
-	    var canvas = document.getElementById(canvasID);
-	    var context = canvas.getContext('2d');
-	    var imageObj = new Image();
-	    imageObj.onload = function() {
-		context.drawImage(imageObj,0,0,canvaswidth,canvasheight);//drawImage(imageobject, x, y,width,height) width and height are optional, if ommited uses image width/height. 
-		
-	    };
-	    imageObj.src = "stim/"+picfile; // assuming a file structure: index.html in with stim folder.
-	}
-	
 	var lineupTable = "<table class='testTable'>";
 	
 	var lineuplength = lineupImgs.length;
@@ -166,17 +153,6 @@ function testStim(lineupImgs,targDiv,condition){
 	}//end if condition=presentabsent
 
 	 if(condition=="mostlikely"||condition=="nominate"){
-	//     lineupTable+="<tr>";
-	//     for(var i = 0;i<lineuplength;i++){
-	// 	if(i==6)lineupTable+="<td>No match</td>";
-	// 	else lineupTable+="<td>Face "+(i+1)+"</td>";
-	//     }
-	//     lineupTable+="</tr>";
-	//     lineupTable+="<tr>";
-	//     for(var i = 0;i<lineuplength;i++){
-	// 	lineupTable+="<td><input type='radio' name='response' id='response"+i+"' value='"+(i+1)%lineuplength+"'></td>"; //value 1-6, 0=absent
-	//     }
-	//     lineupTable+="</tr>";
 	if(condition=="nominate"){
 	    lineupTable+="<tr><td colspan='"+(lineuplength/2)+"'>No match</br><input type='radio' name='response' id='response0' value='0'></td></tr>";	    
 	}
@@ -199,7 +175,36 @@ function testStim(lineupImgs,targDiv,condition){
 	lineupTable+="</table>";
 
 	document.getElementById(targDiv).innerHTML=lineupTable;
-	for(var i=0;i<lineupImgs.length;i++)drawPic(lineupImgs[i],targDiv+"canvas"+i);
+//	for(var i=0;i<lineupImgs.length;i++)drawPic(lineupImgs[i],targDiv+"canvas"+i);
+    
+    this.init=function(){
+	testStimLoadTime = new Date().getTime();
+	var flag = 0; //counts how many onloads have run
+	var imageObjs = []; //holds images corresponding to lineupImgs
+	function startflag(){//called by onload: last one to load draws all images to a canvas.
+	    flag++;
+	    console.log(flag);//diag
+	    if(flag==lineupImgs.length){
+		console.log("DRAWIN");
+		for(var i=0;i<lineupImgs.length;i++){
+		    drawPic(imageObjs[i],targDiv+"canvas"+i);
+		}
+	    }
+	}
+	
+	for(var i=0;i<lineupImgs.length;i++){
+	    imageObjs.push(new Image());
+	    imageObjs[i].onload = function(){startflag();}
+	    imageObjs[i].src="stim/"+lineupImgs[i];
+	}
+	
+	function drawPic(picObj, canvasID){//canvas id's are 'canvas0' through 'canvas5'
+	    console.log("TRYN "+canvasID+":"+picObj+"::"+document.getElementById(canvasID));
+	    var canvas = document.getElementById(canvasID);
+	    var context = canvas.getContext('2d');
+	    context.drawImage(picObj,0,0,canvaswidth,canvasheight);
+	}
+
     }//end init
 
 
