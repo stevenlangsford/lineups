@@ -94,12 +94,12 @@ startendtimes:[loadTime,new Date().getTime()]
 }
 for(var i=0;i<lineupID.length;i++){
 //ID, trialnumber, whichlineup (which can then be matched to training lineup to get which face&presentation time), response time, confidence
-var datline = ""+ppantID+","+i+","+(lineupID[i]+1)+","+condition+","+responses[i]+","+inspection_intervals[i]+","+confRating[i];
+var datline = ""+ppantID+","+i+","+(lineupID[i]+1)+","+condition+","+responses[i]+","+inspection_intervals[i]+","+confRatings[i];
 dataObj.test.push(datline);
 }
 saveData(dataObj);
 
-document.getElementById("uberdiv").innerHTML="You're done! Thank you for participating!";
+document.getElementById("uberdiv").innerHTML="You're done!</br> Thank you for participating!";
 }
 
 function saveData(data) {

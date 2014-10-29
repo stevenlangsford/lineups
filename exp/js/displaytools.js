@@ -31,7 +31,6 @@ function studyStim(imgFile,targDiv,loadDelay,presentationTime){
 		functionChain(imageDrawerFns,displaytimes);
 	    }
 	    else{
-		console.log(flag);
 		flag++;
 	    }
 	}
@@ -43,11 +42,9 @@ function studyStim(imgFile,targDiv,loadDelay,presentationTime){
 	    }
 	    ifixer = function(ani){
 		return function(){
-		    console.log(ani+"::"+imageObjs[ani]);
 		    var canvas = document.getElementById('stimCanvas');
 		    var context = canvas.getContext('2d');
 		    context.drawImage(imageObjs[ani],0,0,canvaswidth,canvasheight);
-		    console.log("drawing image "+ani);
 		}
 
 	    }
@@ -59,7 +56,7 @@ function studyStim(imgFile,targDiv,loadDelay,presentationTime){
 	var canvas = document.getElementById("stimCanvas");
 	var context = canvas.getContext('2d');
 	context.clearRect(0,0,canvas.width,canvas.height);
-	nextTrial();//defined in training_task.js
+	nextTrial();//defined in task.js
     }
 
     this.init= function(){//init is only contact with outside world
@@ -71,9 +68,8 @@ function studyStim(imgFile,targDiv,loadDelay,presentationTime){
 	    document.getElementById(targDiv).innerHTML="<canvas id='stimCanvas' height='"+canvasheight+"' width='"+canvaswidth+"'></canvas>";
 	    drawPicChain(["fixationdot.jpg",imgFile],[500]);
 	}
-	// onclick is functionChain([placeCanvas,fixation,showstim, clearstim],[10,loadDelay,presentationTime])
     }
-}//end of studyStim displayer object
+}//end of studyStim-display object
 
 var testResponseFn; //At this level to be visible to buttons, function body set just-in-time by testStim objects
 
@@ -95,19 +91,27 @@ function testStim(lineupImgs,targDiv,condition){
 
     document.getElementById('uberdiv').style.top="0%";//Hmm, bad place to do this? :-(
 
-    var confratingHTML = ""+
+    function getConfratingHTML(responsetype){
+	//responsetype comes in as 'yes' or 'no' in presentabsent condition, or a number 0-6 in the other conditions (where 0 is no-match)
+	var retHTML=""+
 	"<table class='centered'>"+
-	"<tr><td colspan=5>Please rate your confidence in this response:</td></tr>"+
-	"<tr><td>Guess</td><td>Possible</td><td>Probable</td><td>Almost certain</td><td>Certain</td></tr>"+
+	"<tr><td colspan=5>";
+	
+	if(responsetype!="no"&&responsetype!=0)retHTML+="How confident are you that the target <strong> is </strong> in the lineup?";
+	else retHTML+="How confident are you that the target <strong> is not </strong> in the lineup?";
+	
+	retHTML+="</td></tr>"+
+	"<tr><td>Not confident at all, it's a guess</td><td>Somewhat confident</td><td>Very confident</td><td>As certain as I can be</td></tr>"+
 	"<tr>"+
 	"<td><input type=\"radio\" name=\"conf\" id=\"conf0\" value=\"0\"/></td>"+
 	"<td><input type=\"radio\" name=\"conf\" id=\"conf1\" value=\"1\"/></td>"+
 	"<td><input type=\"radio\" name=\"conf\" id=\"conf2\" value=\"2\"/></td>"+
 	"<td><input type=\"radio\" name=\"conf\" id=\"conf3\" value=\"3\"/></td>"+
-	"<td><input type=\"radio\" name=\"conf\" id=\"conf4\" value=\"4\"/></td>"+
 	"</tr>"+
 	"<tr><td colspan=5 style='text-align:center'><button onclick='confratingFn()'>Next</button></tr>"+
 	"</table>";
+	return(retHTML);
+    }
     
 	var lineupTable = "<table class='testTable'>";
 	
@@ -147,7 +151,7 @@ function testStim(lineupImgs,targDiv,condition){
 	    testResponseFn=function(response){
 		inspection_intervals.push(new Date().getTime()-testStimLoadTime);
 		responses.push(response);
-		document.getElementById('uberdiv').innerHTML=confratingHTML;
+		document.getElementById('uberdiv').innerHTML=getConfratingHTML(response);
 	    }
 	    lineupTable+="</td></tr>"
 	}//end if condition=presentabsent
@@ -168,7 +172,7 @@ function testStim(lineupImgs,targDiv,condition){
 
 		responses.push($('input[name="response"]:checked').val());
 		inspection_intervals.push(new Date().getTime()-testStimLoadTime);
-		document.getElementById('uberdiv').innerHTML=confratingHTML;
+		document.getElementById('uberdiv').innerHTML=getConfratingHTML($('input[name="response"]:checked').val());
 	    }	
 	}//end if condition==mostlikely||condition==nominate
 	lineupTable+="</tr>";
@@ -183,9 +187,7 @@ function testStim(lineupImgs,targDiv,condition){
 	var imageObjs = []; //holds images corresponding to lineupImgs
 	function startflag(){//called by onload: last one to load draws all images to a canvas.
 	    flag++;
-	    console.log(flag);//diag
 	    if(flag==lineupImgs.length){
-		console.log("DRAWIN");
 		for(var i=0;i<lineupImgs.length;i++){
 		    drawPic(imageObjs[i],targDiv+"canvas"+i);
 		}
@@ -199,7 +201,6 @@ function testStim(lineupImgs,targDiv,condition){
 	}
 	
 	function drawPic(picObj, canvasID){//canvas id's are 'canvas0' through 'canvas5'
-	    console.log("TRYN "+canvasID+":"+picObj+"::"+document.getElementById(canvasID));
 	    var canvas = document.getElementById(canvasID);
 	    var context = canvas.getContext('2d');
 	    context.drawImage(picObj,0,0,canvaswidth,canvasheight);

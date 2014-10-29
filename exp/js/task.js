@@ -46,7 +46,7 @@ var testCounter = 0;
 var testStimLoadTime; //set on init, inspection_interval is the difference between this and when 'next' is clicked.
 
 function nextTest(){
-
+console.log("test#"+testCounter);
 if(testCounter==lineupID.length)finishTest(); //note since the page has been re-loaded, lineupID is not the same shuffle as in training. 
 else{
     new testStim(lineups[lineupID[testCounter]],"uberdiv",condition).init();
