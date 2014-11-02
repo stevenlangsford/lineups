@@ -9,7 +9,7 @@ function beginExp(){
     nextTrial();//defined in 'task.js'
 }
 
-var instructionchapters = ["Thank you for your interest in this study! Please read these instructions carefully, they will be followed by a short quiz","The study has two parts. In the first part, you'll be shown a collection of faces to remember. You'll be able to go through the faces at your own speed, but each face will only be shown for a limited amount of time.","Each time you click the 'next' button, a new face will be shown briefly. There are 40 faces to remember.","After the training there is a test of visual processing speed.","For this you will have to decide if some briefly flashed text is a word or a non-word. <br/> This task is placed here rather than at the beginning to introduce a gap between training and test.","In the second part of the study, you'll be given a series of lineup tasks to test your memory of the faces. You'll get feedback about your accuracy at the end.","On the next page, you'll be asked some questions about these instructions. There are also a couple of demographics questions for our records. The whole task is expected to take around 15 minutes.</p>This is part of a study being run by the University of Adelaide. By clicking 'Next', you are agreeing to take part in it. You should know that you're free to withdraw at any time (although you'll only be paid on completion), and that although data gained from this study may be published, you will not be identified and your personal details will not be divulged.<p style=\"font-size:.8em\">Please direct any questions about this study to the principle investigator, Dr. John Dunn (john.dunn@adelaide.edu.au). For any questions regarding the ethics of the study, please contact the convenor of the Subcommittee for Human Research in the School of Psychology at the University of Adelaide, Dr. Paul Delfabbro (+61)08 8313 4936.</p>"];
+var instructionchapters = ["Thank you for your interest in this study! Please read these instructions carefully, they will be followed by a short quiz","The study has two parts. In the first part, you'll be shown a collection of faces to remember. You'll be able to go through the faces at your own speed, but each face will only be shown for a limited amount of time.","Each time you click the 'next' button, a new face will be shown briefly. There are 40 faces to remember.","After the training there is a test of visual processing speed.","For this you will have to decide if some briefly flashed text is a word or a non-word. <br/> This task is placed here rather than at the beginning to introduce a gap between training and test.","In the second part of the study, you'll be given a series of lineup tasks to test your memory of the faces. You'll get feedback about your accuracy at the end.","On the next page, you'll be asked some questions about these instructions. There are also a couple of demographics questions for our records. The whole task is expected to take around 30 minutes.</p>This is part of a study being run by the University of Adelaide. By clicking 'Next', you are agreeing to take part in it. You should know that you're free to withdraw at any time (although you'll only be paid on completion), and that although data gained from this study may be published, you will not be identified and your personal details will not be divulged.<p style=\"font-size:.8em\">Please direct any questions about this study to the principle investigator, Dr. John Dunn (john.dunn@adelaide.edu.au). For any questions regarding the ethics of the study, please contact the convenor of the Subcommittee for Human Research in the School of Psychology at the University of Adelaide, Dr. Paul Delfabbro (+61)08 8313 4936.</p>"];
 
 var instructioncounter = 0;
 
@@ -108,7 +108,7 @@ dataObj.test.push(datline);
 }
 saveData(dataObj);
 
-document.getElementById("uberdiv").innerHTML="You're done!</br> <h3>You got "+correctCount+" out of 80 correct, or "+Math.round(correctcount/80*100)+"%</h3><br/>Thank you for participating!";
+document.getElementById("uberdiv").innerHTML="You're done!</br> <h3>You got "+correctCount+" out of 80 correct, or "+Math.round(correctCount/80*100)+"%</h3><br/>Thank you for participating!";
 }
 
 function saveData(data) {
@@ -123,11 +123,11 @@ function demographics(){
 	"<tr><td>"+
 	"Gender: <input type=\"radio\" name=\"gender\" id=\"male\" value=\"male\">&nbspMale&nbsp&nbsp"+
 	"<input type=\"radio\" name=\"gender\" id=\"fem\" value=\"female\">&nbspFemale&nbsp&nbsp"+
-	"<input type=\"radio\" name=\"gender\" id=\"other\" value=\"other\">&nbspOther"+
+	"<input type=\"radio\" name=\"gender\" id=\"other\" value=\"other\">&nbspDecline to answer"+
 	"</td></tr>"+
 	"<tr><td>"+
-	"Do you have normal vision, or corrected-to-normal vision with a pair of glasses you are now wearing?<input type=\"radio\" name=\"colblind\" id=\"colblind\" value=\"colblind\">&nbspYes&nbsp&nbsp"+
-	"<input type=\"radio\" name=\"colblind\" id=\"notcolblind\" value=\"notcolblind\">&nbspNo"+
+	"Do you have normal vision, or corrected-to-normal vision with a pair of glasses you are now wearing?<input type=\"radio\" name=\"colblind\" id=\"colblind\" value=\"normal\">&nbspYes&nbsp&nbsp"+
+	"<input type=\"radio\" name=\"colblind\" id=\"notcolblind\" value=\"abnormal\">&nbspNo"+
 	"</tr></td>"+
 	"<tr><td>"+
 	"Age:<input type=\"text\" id=\"age\">"+

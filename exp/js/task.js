@@ -43,7 +43,7 @@ function nextTrial(){
 
 //TEST TASK
 var conditions = ["presentabsent","mostlikely","nominate"];
-var condition; //selected from condition via participant id key at login (in preamble.js 'gatekeeper' function)
+var condition="presentabsent"; //selected from condition via participant id key at login (in preamble.js 'gatekeeper' function) (default value for straight-to-test runs)
 var inspection_intervals=[]; //Records time between test item loading and the next button being hit.
 var responses = []; //responses pushed here by teststim objects
 var confRatings = [];

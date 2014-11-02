@@ -272,7 +272,7 @@ function getNonword(){
     );
 } 
 
-var instructionChapter=["This is a short task looking at visual processing speed","You'll be shown a short bit of text and asked to decide if it is a word or a non-word.","The text will only be displayed for a short period of time.","As you get more questions right, the display time will decrease, and if you make mistakes, the display time will increase.","Your goal is to get to the fastest display time you can in five minutes."]
+var instructionChapter=["This is a short task looking at visual processing speed","You'll be shown a short bit of text and asked to decide if it is a word or a non-word.","The text will only be displayed for a short period of time.","As you get more questions right, the display time will decrease, and if you make mistakes, the display time will increase.","Your goal is to get and hold the fastest display time you can."]
 
 var instructioncounter = 0;
 var instructions=function(){
