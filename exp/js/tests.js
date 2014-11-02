@@ -11,8 +11,9 @@
 
 // // testStim(lineupImgs,targDiv,condition){
 
-var bill = new testStim(lineups[Math.round(Math.random()*lineups.length)],'uberdiv',"nominate");
-bill.init();
+//var bill = new testStim(lineups[Math.round(Math.random()*lineups.length)],'uberdiv',"nominate");
+//bill.init();
+new spacerGame('uberdiv',5000).init()
 
 //console.log(prompt("Please enter your ParticipantID key"));
 //console.log(new Date().getTime());

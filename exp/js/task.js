@@ -25,9 +25,9 @@ var interstim_intervals=[];//Records 'deliberation time', interval between click
 var trialcounter = 0;
 
 function nextTrial(){
+    console.log("Trial# "+trialcounter);
     if(trialcounter==hm_trainingfaces){
 	finishTraining();//finishTraining() is defined in 'preamble.js', because it's an admin/wrapper sort of thing.
-    //SAVE DATA HERE
     }
     else{
 	// studyStim(imgFile,targDiv,loadDelay,presentationTime)
@@ -46,8 +46,12 @@ var testCounter = 0;
 var testStimLoadTime; //set on init, inspection_interval is the difference between this and when 'next' is clicked.
 
 function nextTest(){
+if(testCounter==0){
+    shuffle(lineupID); //shuffle once at the beginning of test (can't rely on page reload)
+    loadTime = new Date().getTime();
+}
 console.log("test#"+testCounter);
-if(testCounter==lineupID.length)finishTest(); //note since the page has been re-loaded, lineupID is not the same shuffle as in training. 
+if(testCounter==lineupID.length)finishTest(); 
 else{
     new testStim(lineups[lineupID[testCounter]],"uberdiv",condition).init();
 };

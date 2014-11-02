@@ -207,6 +207,87 @@ function testStim(lineupImgs,targDiv,condition){
 	}
 
     }//end init
-
-
 }//end testStim
+
+var spacerGameFn;//Top level to be visible to buttons, body set just in time by spacerGame objects
+function spacerGame(targDiv,runningTime){//runningTime is in millis. Current game is 'word/nonword'
+
+var displaytime = 1000;
+var startTime;
+
+function success(){
+displaytime=Math.max(Math.round(displaytime*.7),10);//faster than that might not render properly.
+}
+function failure(){
+displaytime=Math.max(Math.round(displaytime*1.5),displaytime+10)
+}
+
+var responseHTML= "<br/><br/><br/><br/><button onclick=spacerGameFn('yes')>Word</button><button onclick=spacerGameFn('no')>Non-Word</button>";
+function trial(){
+
+    if(new Date().getTime()-startTime>runningTime){
+	nextTest();//go to test
+	return;
+    }
+    var ans = shuffle(["yes","no"])[0];
+    if(ans=="yes"){
+	document.getElementById(targDiv).innerHTML="<h2>"+getWord()+"</h2>";
+    }
+    else {
+	document.getElementById(targDiv).innerHTML="<h2>"+getNonword()+"</h2>";
+    }
+    spacerGameFn=function(response){
+	console.log("right"+(response==ans)+" "+displaytime);
+	if(response==ans)success();
+	else failure();
+	trial();
+    }
+    setTimeout(function(){
+	document.getElementById(targDiv).innerHTML=responseHTML;
+    },displaytime);
+}
+
+function getWord(){
+return(shuffle(
+["time","year","side","people","kind","way","head","day","house","man","service","thing","friend","woman","father","life","power","child","hour","world","game","school","line","state","end","family","member","student","law","group","car","country","city","problem","hand","name","part","president","place","team","case","minute","week","idea","company","kid","system","body","program","information","question","back","work","parent","government","face","number","others","night","level","office","point","home","health","water","person","art","mother","area","history","money","party","story","result","fact","change","month","morning","lot","reason","right","research","study","girl","shelf","guy","femur","sandwich","job","word","air","teacher","knife","glad","shine","glint","gleam","love","hate","mental","fortune"]
+)[0]);
+}
+
+function getNonword(){
+    var aword = getWord();
+    var swapindex1 = Math.floor(Math.random()*aword.length);
+    var swapindex2 = Math.floor(Math.random()*aword.length);
+    while(swapindex2==swapindex1) swapindex2 = Math.floor(Math.random()*aword.length);
+    var s1 = Math.min(swapindex1,swapindex2);
+    var s2 = Math.max(swapindex1,swapindex2);
+    var charAts1=aword.substring(s1,s1+1);
+    var charAts2 = aword.substring(s2,s2+1);
+    
+    return (
+	    aword.substring(0,s1)+
+	    charAts2+
+	    aword.substring(s1+1,s2)+
+	    charAts1+
+	    aword.substring(s2+1,aword.length)
+    );
+} 
+
+var instructionChapter=["This is a short task looking at visual processing speed","You'll be shown a short bit of text and asked to decide if it is a word or a non-word.","The text will only be displayed for a short period of time.","As you get more questions right, the display time will decrease, and if you make mistakes, the display time will increase.","Your goal is to get to the fastest display time you can in five minutes."]
+
+var instructioncounter = 0;
+var instructions=function(){
+if(instructioncounter==instructionChapter.length){
+startTime = new Date().getTime();
+trial();
+return;
+}
+document.getElementById(targDiv).innerHTML=instructionChapter[instructioncounter]+"<br/><button onclick='spacerGameFn()'>Next</button>";
+instructioncounter++;
+}
+
+this.init=function(){
+    spacerGameFn=instructions;
+    instructions();
+}
+
+}
