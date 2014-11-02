@@ -12,6 +12,11 @@ if(i!=0&&i!=1&&i!=13)lineupID.push(i); //0,1,and 13 are bad lineups: some images
 }
 shuffle(lineupID);
 
+var shown = []; //used only to calculate correct/incorrect for feedback at the end (will break if split into separate sessions...)
+for(var i=0;i<hm_trainingfaces;i++){
+shown.push(lineupID[i]);
+}
+
 var faceID = [];
 for(var i=0;i<hm_trainingfaces;i++)faceID.push(shuffle([0,1,2,3,4,5])[0]);
 
@@ -37,7 +42,8 @@ function nextTrial(){
 }
 
 //TEST TASK
-var condition = shuffle(["presentabsent","mostlikely","nominate"])[0];//TODO set from participantID key (in preamble.js)
+var conditions = ["presentabsent","mostlikely","nominate"];
+var condition; //selected from condition via participant id key at login (in preamble.js 'gatekeeper' function)
 var inspection_intervals=[]; //Records time between test item loading and the next button being hit.
 var responses = []; //responses pushed here by teststim objects
 var confRatings = [];
@@ -57,4 +63,3 @@ else{
 };
 testCounter++;
 }
-

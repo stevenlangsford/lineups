@@ -1,0 +1,2 @@
+#!/bin/bash
+appcfg.py download_data --config_file=bulkloader.yaml --filename=prepilot/turkdata.csv --kind=DataObject --url=http://adelaidecogscifaces.appspot.com/_ah/remote_api

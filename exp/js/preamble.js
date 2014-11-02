@@ -78,7 +78,7 @@ startendtimes:[loadTime,new Date().getTime()]
 for(var i=0;i<hm_trainingfaces;i++){
 //Training data format: ID, trialnumber, lineupID, faceID, display time, trial initiation time
 //note lineupID and faceID are 0-indexed in the javascript, 1 indexed in excel file/docs, conversion happens here (so raw data matches docs)
-var datrow = ""+ppantID+","+i+","+(lineupID[i]+1)+","+(faceID[i]+1)+","+displaytime[i]+interstim_intervals[i];
+var datrow = ""+ppantID+","+i+","+(lineupID[i]+1)+","+(faceID[i]+1)+","+displaytime[i]+","+interstim_intervals[i];
 dataObj.training.push(datrow);
 }
 
@@ -94,14 +94,21 @@ var dataObj = {
 test:[],
 startendtimes:[loadTime,new Date().getTime()]
 }
+var correctCount = 0;
 for(var i=0;i<lineupID.length;i++){
 //ID, trialnumber, whichlineup (which can then be matched to training lineup to get which face&presentation time), response time, confidence
-var datline = ""+ppantID+","+i+","+(lineupID[i]+1)+","+condition+","+responses[i]+","+inspection_intervals[i]+","+confRatings[i];
+var isCorrect;
+if(shown.indexOf(lineupID[i])>=0&&((responses[i]-1)==faceID[i]||responses[i]=="yes"))isCorrect=true;
+else if(shown.indexOf(lineupID[i])==-1&&((responses[i]-1)==0||responses[i]=="no"))isCorrect=true;
+else isCorrect= false;
+if(isCorrect)correctCount++;
+
+var datline = ""+ppantID+","+i+","+(lineupID[i]+1)+","+condition+","+responses[i]+","+inspection_intervals[i]+","+confRatings[i]+","+isCorrect;
 dataObj.test.push(datline);
 }
 saveData(dataObj);
 
-document.getElementById("uberdiv").innerHTML="You're done!</br> Thank you for participating!";
+document.getElementById("uberdiv").innerHTML="You're done!</br> <h3>You got "+correctCount+" out of 80 correct, or "+Math.round(correctcount/80*100)+"%</h3><br/>Thank you for participating!";
 }
 
 function saveData(data) {
@@ -436,10 +443,12 @@ var ppantID;
 
 function gatekeeper(astring){
     ppantID=astring;
-    if(astring=="TRAIN"){
+    if(astring.substring(0,3)=="ADL"){
+	condition = conditions[astring.substring(4,astring.length)%conditions.length];
+	console.log(condition);
 	instructions();
     }
-    else if(astring=="TEST"){
+    else if(astring=="TEST"){//testing/demo only, to delete along with skip intro button
 	nextTest();
     }
     else{
