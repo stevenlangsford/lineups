@@ -97,13 +97,18 @@ startendtimes:[loadTime,new Date().getTime()]
 var correctCount = 0;
 for(var i=0;i<lineupID.length;i++){
 //ID, trialnumber, whichlineup (which can then be matched to training lineup to get which face&presentation time), response time, confidence
+
 var isCorrect;
 if(shown.indexOf(lineupID[i])>=0&&((responses[i]-1)==faceID[i]||responses[i]=="yes"))isCorrect=true;
 else if(shown.indexOf(lineupID[i])==-1&&((responses[i]-1)==0||responses[i]=="no"))isCorrect=true;
 else isCorrect= false;
 if(isCorrect)correctCount++;
 
-var datline = ""+ppantID+","+i+","+(lineupID[i]+1)+","+condition+","+responses[i]+","+inspection_intervals[i]+","+confRatings[i]+","+isCorrect;
+var correctAns;
+if(shown.indexOf(ineupID[i])>=0)correctAns=(faceID[i]+1);
+else correctAns=0;
+
+var datline = ""+ppantID+","+i+","+(lineupID[i]+1)+","+condition+","+responses[i]+","+inspection_intervals[i]+","+confRatings[i]+","+correctAns;
 dataObj.test.push(datline);
 }
 saveData(dataObj);

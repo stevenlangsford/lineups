@@ -2,6 +2,14 @@
 var canvasheight = Math.round(500*.5); //sizes are expressed in this way because 500x400 seems to get the proportions right, then .5 is a scaling factor, tinker at will.
 var canvaswidth = Math.round(400*.5);
 
+while(canvasheight>screen.height*.65/2){//hacky mcHackHack? Proper way to scale these?
+canvasheight--;
+canvaswidth=canvasheight*4/5;
+}
+canvasheight=Math.round(canvasheight)
+canvaswidth=Math.round(canvaswidth)
+
+console.log(canvaswidth+":"+canvasheight);
 
 var nextButtonFn; //needs to be at top level to be visible to a button, used in onclick. Function body set just-in-time by studyStim objects.
 
@@ -60,7 +68,7 @@ function studyStim(imgFile,targDiv,loadDelay,presentationTime){
     }
 
     this.init= function(){//init is only contact with outside world
-	document.getElementById(targDiv).innerHTML="<button onclick=nextButtonFn()>Next Face</button></br>";
+	document.getElementById(targDiv).innerHTML="<div style=\"width:"+canvaswidth+"px; height:"+canvasheight+"px;clear:both; display:block;\"></div><br/><button onclick=nextButtonFn()>Next Face</button></br>";
 	
 	nextButtonFn = function(){
 	    interstim_intervals.push(new Date().getTime()-lastClick);
