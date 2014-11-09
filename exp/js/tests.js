@@ -13,6 +13,7 @@
 
 //var bill = new testStim(lineups[Math.round(Math.random()*lineups.length)],'uberdiv',"nominate");
 //bill.init();
+condition="nominate";
 new spacerGame('uberdiv',5000).init()
 
 //console.log(prompt("Please enter your ParticipantID key"));

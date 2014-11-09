@@ -146,6 +146,9 @@ function demographics(){
 	"<tr><td>"+
 	"<button onclick=demographicsvalidate()>Continue</button>"+
 	"</td></tr>"+
+	"<tr><td>"+
+	"Please enter your email address: <input type=\"text\" id=\"emailadd\"><br/>You email address will be used only to send you an Amazon gift voucher worth $20 on completion of the experiment, and to send a debriefing email explaining the study in a bit more detail."
+	"</td></tr>"+
 	"</table>";
 }
 
@@ -432,9 +435,15 @@ function demographicsvalidate(){
     var country = document.getElementById("countrypicker").value;
     var countryflag = country.length>0;
     demostring+=country;
-    if(genderflag&&langflag&&ageflag&&countryflag&&colblindflag){
 
-	var ppntstring = ppantID+","+demostring+","+loadTime;
+    var emailadd = document.getElementById("emailadd").value;
+    var emailflag = emailadd.length>0;
+    demostring+=decomma(emailadd)+",";
+
+    
+    if(genderflag&&langflag&&ageflag&&countryflag&&colblindflag&&emailflag){
+
+	var ppntstring = ppantID+","+demostring+","+loadTime+","+screen.width+","+screen.height+","+canvaswidth+","+canvasheight;
 	saveData({demographics:ppntstring});
 //	console.log("ppntstring: "+ppntstring);//diag
 	beginExp();
@@ -442,22 +451,55 @@ function demographicsvalidate(){
     else alert("Please fill out all the fields.");
 }
 
+function testIntro(){
+    if(condition=="presentabsent"){
+	document.getElementById('uberdiv').innerHTML="<p>The next stage of the study is the test stage.</p>"+
+	    "<p>You'll be shown a lineup of six faces and asked if one of them is one you saw in training.</p>"+
+	    "<p>Some of the lineups will have a face you've seen before, and some won't</p>"+
+	    "<p>There are 80 lineups, so this part of the study is expected to take between 20 and 30 minutes</p>";
+    }
+    if(condition=="mostlikely"){
+	document.getElementById('uberdiv').innerHTML="<p>The next stage of the study is the test stage.</p>"+
+	    "<p>You'll be shown a lineup of six faces and asked which one of them is most like one you saw in training.</p>"+
+	    "<p>Some of the lineups will have a face you've seen before, and some won't</p>"+
+	    "<p>If you have seen one of the faces before, chose that one, otherwise choose the one that is most similar to a face you saw.</p>"+
+	    "<p>There are 80 lineups, so this part of the study is expected to take between 20 and 30 minutes</p>";
+    }
+    if(condition=="nominate"){
+		document.getElementById('uberdiv').innerHTML="<p>The next stage of the study is the test stage.</p>"+
+	    "<p>You'll be shown a lineup of six faces and asked which one of them you saw in training.</p>"+
+	    "<p>Some of the lineups will have a face you've seen before, and some won't</p>"+
+	    "<p>If you have seen one of the faces before, chose that one, otherwise please select the 'no match' option.</p>"+
+	    "<p>There are 80 lineups, so this part of the study is expected to take between 20 and 30 minutes</p>";
+    }
+    document.getElementById('uberdiv').innerHTML=document.getElementById('uberdiv').innerHTML+"<br/><button onclick='nextTest()'>Continue</button>";//go to test
+}//end testIntro
 
 //Start here!
 var ppantID;
 
 function gatekeeper(astring){
-    ppantID=astring;
-    if(astring.substring(0,3)=="ADL"){
-	condition = conditions[astring.substring(4,astring.length)%conditions.length];
-	console.log(condition);
-	instructions();
-    }
-    else if(astring=="TEST"){//testing/demo only, to delete along with skip intro button
-	nextTest();
-    }
-    else{
-	gatekeeper(prompt("ID key not found. Please re-enter your ID key."));
-    }
+    //vanilla random allocation of conditions
+    ppantid=Math.round(Math.random()*1000000);
+    condition = shuffle(["presentabsent","mostlikely","nominate"])[0];
+    instructions();
+
+    //fancy ID-controlled entry and allocation to conditions
+
+    // ppantID=astring;
+    // if(astring.substring(0,3)=="ADL"){
+    // 	condition = conditions[astring.substring(4,astring.length)%conditions.length];
+    // 	console.log(condition);
+    // 	instructions();
+    // }
+    // else if(astring=="TEST"){//testing/demo only, to delete along with skip intro button
+    // 	nextTest();
+    // }
+    // else{
+    // 	gatekeeper(prompt("ID key not found. Please re-enter your ID key."));
+    // }
+    
 }
-gatekeeper(prompt("Please enter your ParticipantID key"));
+
+//gatekeeper(prompt("Please enter your ParticipantID key")); //fancy id validation version
+gatekeeper("Noidrequired"); //random allocation to conditions

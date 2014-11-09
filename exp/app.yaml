@@ -17,6 +17,9 @@ handlers:
 - url: /stim
   static_dir: stim
 
+- url: /spacer_imgs
+  static_dir: spacer_imgs
+
 - url: /.*
   script: backend.application
 
