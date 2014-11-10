@@ -16,3 +16,8 @@ body{
     width:70%;
     text-align:center;
 }
+
+.instructions{
+    width:70%;
+    display:inline-block;
+}

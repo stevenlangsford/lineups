@@ -9,7 +9,7 @@ while(canvasheight>screen.height*.65/2){//hacky mcHackHack? Proper way to scale 
 canvasheight=Math.round(canvasheight)
 canvaswidth=Math.round(canvaswidth)
 
-console.log(canvaswidth+":"+canvasheight);
+//console.log(canvaswidth+":"+canvasheight);
 
 var nextButtonFn; //needs to be at top level to be visible to a button, used in onclick. Function body set just-in-time by studyStim objects.
 
@@ -119,7 +119,7 @@ function testStim(lineupImgs,targDiv,condition){
 	    "<tr><td colspan=5 style='text-align:center'><button onclick='confratingFn()'>Next</button></tr>"+
 	    "</table>";
 	return(retHTML);
-    }
+    }//end getConfrating HTML
     
     var lineupTable = "<table class='testTable'>";
     
@@ -135,13 +135,14 @@ function testStim(lineupImgs,targDiv,condition){
     lineupTable+="</td>";
     lineupTable+="</tr><tr>";
 
+    var faceSeq = shuffle([0,1,2,3,4,5]);//This randomizes the order of the faces in the lineup.(assuming lineup length 6 here... meh)
     
     for(var i = 0;i<lineuplength;i++){
 	lineupTable+="<td>"+
-	    "<canvas id='"+targDiv+"canvas"+i+"' height='"+canvasheight+"' width='"+canvaswidth+"'></canvas></br>";
+	    "<canvas id='"+targDiv+"canvas"+faceSeq[i]+"' height='"+canvasheight+"' width='"+canvaswidth+"'></canvas></br>";
 	if(condition=="mostlikely"||condition=="nominate"){
 	    lineupTable+="Face "+(i+1)+"</br>";
-	    lineupTable+="<input type='radio' name='response' id='response"+i+"' value='"+(i+1)+"'></td>"; //value 1-6, 0=absent
+	    lineupTable+="<input type='radio' name='response' id='response"+i+"' value='"+(faceSeq[i]+1)+"'></td>"; //value in range 1-6 for selected faces. Value '0' (absent) exists in some conditions, but not from these face response buttons.
 	}
 	lineupTable+="</td>";
 
@@ -219,7 +220,7 @@ function testStim(lineupImgs,targDiv,condition){
 
 var spacerGameFn;//Top level to be visible to buttons, body set just in time by spacerGame objects
 
-function spacerGame(targDiv,runningTime){//runningTime is in millis. Current game is 'word/nonword'
+function spacerGame(targDiv,runningTime){//runningTime is in millis. Current game is change-blindness
     var path = "spacer_imgs/";
     var suffix = ".jpg";
 
@@ -236,7 +237,6 @@ function spacerGame(targDiv,runningTime){//runningTime is in millis. Current gam
 
     document.getElementById(targDiv)
 
-    //HBD
     this.init=function(){
 	var startTime = new Date().getTime();
 
@@ -253,7 +253,7 @@ function spacerGame(targDiv,runningTime){//runningTime is in millis. Current gam
             }
 
 	    nextLayer();
-	    setTimeout(function(){go()},1200);
+	    setTimeout(function(){go()},800);
 	}
 	function nextLayer(){
 	    //	    layerlist[currentlayer].setZIndex(1);
@@ -298,7 +298,7 @@ function spacerGame(targDiv,runningTime){//runningTime is in millis. Current gam
 
 	    
 	    imageObj1.onload = function() {
-		imageObj2.src = imgsrc2; //set in img1 onload to guarantee load order: when img1 load completes you're good to go.
+		imageObj2.src = imgsrc2; //set in img1 onload to guarantee load order: when img2 load completes you're good to go.
 	    };
 	    
 	    imageObj2.onload = function(){
@@ -353,8 +353,7 @@ function spacerGame(targDiv,runningTime){//runningTime is in millis. Current gam
 	go();
     }//end init function
 
-    //HBD
-
+    //word nonword game (tedious)
     // var displaytime = 1000;
     // var startTime;
 

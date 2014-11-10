@@ -1,6 +1,6 @@
 
 
-//nextTrial(); //training stim. Displays ok, haven't run through to finish() yet.
+//nextTrial(); //training stim.
 
 //Show all lineups. (Nice to change the question text to display targDiv if you're doing this.)
 //for(var i=0;i<lineups.length;i++){
@@ -9,12 +9,8 @@
 //}
 
 
-// // testStim(lineupImgs,targDiv,condition){
+//new spacerGame('uberdiv',5000).init() //spacer game
 
-//var bill = new testStim(lineups[Math.round(Math.random()*lineups.length)],'uberdiv',"nominate");
-//bill.init();
-condition="nominate";
-new spacerGame('uberdiv',5000).init()
 
-//console.log(prompt("Please enter your ParticipantID key"));
-//console.log(new Date().getTime());
+
+//testIntro(); //test stim

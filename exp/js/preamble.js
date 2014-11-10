@@ -9,14 +9,23 @@ function beginExp(){
     nextTrial();//defined in 'task.js'
 }
 
-var instructionchapters = ["Thank you for your interest in this study! Please read these instructions carefully, they will be followed by a short quiz","The study has two parts. In the first part, you'll be shown a collection of faces to remember. You'll be able to go through the faces at your own speed, but each face will only be shown for a limited amount of time.","Each time you click the 'next' button, a new face will be shown briefly. There are 40 faces to remember.","After the training there is a test of visual processing speed.","For this you will have to decide if some briefly flashed text is a word or a non-word. <br/> This task is placed here rather than at the beginning to introduce a gap between training and test.","In the second part of the study, you'll be given a series of lineup tasks to test your memory of the faces. You'll get feedback about your accuracy at the end.","On the next page, you'll be asked some questions about these instructions. There are also a couple of demographics questions for our records. The whole task is expected to take around 30 minutes.</p>This is part of a study being run by the University of Adelaide. By clicking 'Next', you are agreeing to take part in it. You should know that you're free to withdraw at any time (although you'll only be paid on completion), and that although data gained from this study may be published, you will not be identified and your personal details will not be divulged.<p style=\"font-size:.8em\">Please direct any questions about this study to the principle investigator, Dr. John Dunn (john.dunn@adelaide.edu.au). For any questions regarding the ethics of the study, please contact the convenor of the Subcommittee for Human Research in the School of Psychology at the University of Adelaide, Dr. Paul Delfabbro (+61)08 8313 4936.</p>"];
+var instructionchapters = ["<p class=\"instructions\">Thank you for your interest in this study! Please read these instructions carefully, they will be followed by a short quiz</p>","<p class=\"instructions\">The study has two parts. In the first part, you'll be shown a collection of faces to remember. You'll be able to go through the faces at your own speed, but each face will only be shown for a limited amount of time.</p>","<p class=\"instructions\">Each time you click the 'next' button, a new face will be shown briefly. There are 40 faces to remember.</p>","<p class=\"instructions\">After the training there is a test of visual processing.</p>","<p class=\"instructions\">Two similar images will be flashed up on the screen separated by a white mask.<br/> Your task will be to find the element that is different between the two images and click on it. <br/> This task is placed here rather than at the beginning to introduce a gap between training and test.</p>","<p class=\"instructions\">In the second part of the study, you'll be given a series of lineup tasks to test your memory of the faces. You'll get feedback about your accuracy at the end.</p>","<p class=\"instructions\">On the next page, you'll be asked some questions about these instructions.</p><p class=\"instructions\">There are also a couple of demographics questions for our records.</p><p class=\"instructions\">The whole task is expected to take around 30~40 minutes.</p><p class=\"instructions\">This is part of a study being run by the University of Adelaide. By clicking 'Next', you are agreeing to take part in it. You should know that you're free to withdraw at any time (although you'll only be paid on completion), and that although data gained from this study may be published, you will not be identified and your personal details will not be divulged</p>.<p class=\"instructions\" style=\"font-size:.8em\">Please direct any questions about this study to the principle investigator, Dr. John Dunn (john.dunn@adelaide.edu.au). For any questions regarding the ethics of the study, please contact the convenor of the Subcommittee for Human Research in the School of Psychology at the University of Adelaide, Dr. Paul Delfabbro (+61)08 8313 4936.</p>"];
 
 var instructioncounter = 0;
 
 function instructions(){
-if(instructioncounter>=instructionchapters.length){instructionquiz(); return;}
-document.getElementById("uberdiv").innerHTML=instructionchapters[instructioncounter]+"<br/><button onclick=instructions()>Next</button>"+
-"</br><button onclick=beginExp()>Skip intro</button>";//dev only
+//document.getElementById('uberdiv').style.width="70%";
+//document.getElementById('uberdiv').style.margin="auto";
+//document.getElementById('uberdiv').style.textalign="center";
+
+if(instructioncounter>=instructionchapters.length){
+  //  document.getElementById('uberdiv').style.width="100%";
+    instructionquiz(); 
+    return;
+}
+
+document.getElementById("uberdiv").innerHTML=instructionchapters[instructioncounter]+"<br/><button onclick=instructions()>Next</button>";//+
+//"</br><button onclick=beginExp()>Skip intro</button>";//dev only
 instructioncounter++;
 }
 
@@ -37,7 +46,7 @@ function instructionquiz(){
 	"<p><strong>What is the spacer task separating the training and test phases?</strong></br>"+
 	"<input type=\"radio\" name=\"howsparse\" id=\"fifteenpc\" value=\"10\"/>&nbsp Sudoku<br/>"+
 	"<input type=\"radio\" name=\"howsparse\" id=\"howmanycats\" value=\"30\"/>&nbsp A reaction time task asking you to match different coloured shapes.<br/>"+
-	"<input type=\"radio\" name=\"howsparse\" id=\"tomorrow\" value=\"50\"/>&nbsp A visual-processing speed challenge where you discriminate between words and non-words<br/>"+
+	"<input type=\"radio\" name=\"howsparse\" id=\"tomorrow\" value=\"50\"/>&nbsp A visual-processing challenge where you click on the element that changes between two similar pictures.<br/>"+
 	"<input type=\"radio\" name=\"howsparse\" id=\"seventyfivepc\" value=\"70\"/>&nbsp A five minute break to get up and stretch your legs.<br/>"+
 	"<input type=\"radio\" name=\"howsparse\" id=\"ninetypc\" value=\"90\"/>&nbsp Trick question, the test phase immediately follows the training.<br/>"+
 	"</p>"+
@@ -85,8 +94,11 @@ dataObj.training.push(datrow);
 saveData(dataObj);
 console.log("training data saved");
 //message:
-//document.getElementById("uberdiv").innerHTML="<p>That's all the faces!</p><p>Please remember to log in again this time tomorrow to complete the study.</p><p>See you then!</p>";
-new spacerGame('uberdiv',3*60*1000).init(); //three minutes of word-nonword game is enough to drive anyone crazy
+document.getElementById("uberdiv").innerHTML="<p>That's all the faces!</p><p>The next stage is the visual processing task.</p><p>Two different images will be presented, separated by a white mask.</p><p>When you find the part of the image that changes between the two, click on it to move to the next image.</p><p>The differences can be quite subtle and hard to find, but they are there.</p><p>This part of the task should take about three minutes.</p><br/><button id=\"gotospacer\" onclick='goToSpacer()'>Continue</button>"; //three minutes of change-blindness is enough to drive anyone crazy
+}
+
+function goToSpacer(){//just because button onclick needs to refer to a toplevel named function apparently?
+new spacerGame('uberdiv',3*60*1000).init();
 }
 
 function finishTest(){
@@ -105,7 +117,7 @@ else isCorrect= false;
 if(isCorrect)correctCount++;
 
 var correctAns;
-if(shown.indexOf(ineupID[i])>=0)correctAns=(faceID[i]+1);
+if(shown.indexOf(lineupID[i])>=0)correctAns=(faceID[i]+1);
 else correctAns=0;
 
 var datline = ""+ppantID+","+i+","+(lineupID[i]+1)+","+condition+","+responses[i]+","+inspection_intervals[i]+","+confRatings[i]+","+correctAns;
@@ -144,10 +156,10 @@ function demographics(){
 	"Country you currently live in:"+countrypicker()+
 	"</td></tr>"+
 	"<tr><td>"+
-	"<button onclick=demographicsvalidate()>Continue</button>"+
+	"Please enter your email address: <input type=\"text\" id=\"emailadd\"><br/>You email address will be used only to send you an Amazon gift voucher worth $20 on completion of the experiment, and to send a debriefing email explaining the study in a bit more detail."+
 	"</td></tr>"+
 	"<tr><td>"+
-	"Please enter your email address: <input type=\"text\" id=\"emailadd\"><br/>You email address will be used only to send you an Amazon gift voucher worth $20 on completion of the experiment, and to send a debriefing email explaining the study in a bit more detail."
+	"<button onclick=demographicsvalidate()>Continue</button>"+
 	"</td></tr>"+
 	"</table>";
 }

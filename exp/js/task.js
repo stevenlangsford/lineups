@@ -30,7 +30,6 @@ var interstim_intervals=[];//Records 'deliberation time', interval between click
 var trialcounter = 0;
 
 function nextTrial(){
-    console.log("Trial# "+trialcounter);
     if(trialcounter==hm_trainingfaces){
 	finishTraining();//finishTraining() is defined in 'preamble.js', because it's an admin/wrapper sort of thing.
     }
