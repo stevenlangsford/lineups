@@ -12,6 +12,8 @@ if(i!=0&&i!=1&&i!=13)lineupID.push(i); //0,1,and 13 are bad lineups: some images
 }
 shuffle(lineupID);
 
+var expectation = {};
+
 var shown = []; //used only to calculate correct/incorrect for feedback at the end (will break if split into separate sessions...)
 for(var i=0;i<hm_trainingfaces;i++){
 shown.push(lineupID[i]);
@@ -34,7 +36,8 @@ function nextTrial(){
 	finishTraining();//finishTraining() is defined in 'preamble.js', because it's an admin/wrapper sort of thing.
     }
     else{
-	console.log("Showing: "+lineupID[trialcounter]+":"+faceID[trialcounter]);
+	console.log("Showing: "+lineupID[trialcounter]+":"+faceID[trialcounter]+":"+lineups[lineupID[trialcounter]][faceID[trialcounter]]);
+	expectation["lineup"+lineupID[trialcounter]]=faceID[trialcounter];
 	// studyStim(imgFile,targDiv,loadDelay,presentationTime)
 	new studyStim(lineups[lineupID[trialcounter]][faceID[trialcounter]],'uberdiv',loadDelay,displaytime[trialcounter]).init()
 	trialcounter++;
@@ -46,6 +49,7 @@ var conditions = ["presentabsent","mostlikely","nominate"];
 var condition="presentabsent"; //selected from condition via participant id key at login (in preamble.js 'gatekeeper' function) (default value for straight-to-test runs)
 var inspection_intervals=[]; //Records time between test item loading and the next button being hit.
 var responses = []; //responses pushed here by teststim objects
+var trueanswers = []; //faceID's, pushed in the correct order at test
 var confRatings = [];
 var testCounter = 0;
 
@@ -60,11 +64,14 @@ console.log("test#"+testCounter);
 if(testCounter==lineupID.length)finishTest(); 
 else{
     //DIAG
-    var minicorrectAns;
-    if(shown.indexOf(lineupID[testCounter])>=0)minicorrectAns=(faceID[testCounter]);
-    else minicorrectAns=0;
-    console.log("Showing: "+lineupID[testCounter]+" expecting "+minicorrectAns);
+    console.log("Showing: "+lineupID[testCounter]+" expecting "+expectation["lineup"+lineupID[testCounter]]+":"+lineups[lineupID[testCounter]][expectation["lineup"+lineupID[testCounter]]]);
     //DIAG
+    var thetruth = expectation["lineup"+lineupID[testCounter]];
+
+    if(thetruth==undefined)thetruth=0;
+    else thetruth=thetruth+1; //convert to 0-6 with 0 'not present' format. (originally 0-5+undefined)
+    
+    trueanswers.push(thetruth);
 
     new testStim(lineups[lineupID[testCounter]],"uberdiv",condition).init();
 };
