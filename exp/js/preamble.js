@@ -78,7 +78,6 @@ function quizvalidate(){
 }
 
 function finishTraining(){
-console.log("Entered finishtraining");
 //prepare and save data:
 var dataObj = {
 training:[],
@@ -446,11 +445,11 @@ function demographicsvalidate(){
     demostring+=decomma(languagechoice)+",";
     var country = document.getElementById("countrypicker").value;
     var countryflag = country.length>0;
-    demostring+=country;
+    demostring+=country+",";
 
     var emailadd = document.getElementById("emailadd").value;
     var emailflag = emailadd.length>0;
-    demostring+=decomma(emailadd)+",";
+    demostring+=decomma(emailadd);
 
     
     if(genderflag&&langflag&&ageflag&&countryflag&&colblindflag&&emailflag){
@@ -492,7 +491,7 @@ var ppantID;
 
 function gatekeeper(astring){
     //vanilla random allocation of conditions
-    ppantid=Math.round(Math.random()*1000000);
+    ppantID=Math.round(Math.random()*1000000);
     condition = shuffle(["presentabsent","mostlikely","nominate"])[0];
     instructions();
 
