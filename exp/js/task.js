@@ -34,6 +34,7 @@ function nextTrial(){
 	finishTraining();//finishTraining() is defined in 'preamble.js', because it's an admin/wrapper sort of thing.
     }
     else{
+	console.log("Showing: "+lineupID[trialcounter]+":"+faceID[trialcounter]);
 	// studyStim(imgFile,targDiv,loadDelay,presentationTime)
 	new studyStim(lineups[lineupID[trialcounter]][faceID[trialcounter]],'uberdiv',loadDelay,displaytime[trialcounter]).init()
 	trialcounter++;
@@ -58,6 +59,13 @@ if(testCounter==0){
 console.log("test#"+testCounter);
 if(testCounter==lineupID.length)finishTest(); 
 else{
+    //DIAG
+    var minicorrectAns;
+    if(shown.indexOf(lineupID[testCounter])>=0)minicorrectAns=(faceID[testCounter]);
+    else minicorrectAns=0;
+    console.log("Showing: "+lineupID[testCounter]+" expecting "+minicorrectAns);
+    //DIAG
+
     new testStim(lineups[lineupID[testCounter]],"uberdiv",condition).init();
 };
 testCounter++;
