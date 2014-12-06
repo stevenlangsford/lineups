@@ -1,8 +1,8 @@
 //params
 var short_displaytime = 500;//1/2 sec, length of time face seen at training
-var long_displaytime = 1000;//1 sec, length of time face seen at training
+var long_displaytime = 2000;//2 sec, length of time face seen at training
 var hm_trainingfaces = 40; //assume half are long and half are short displaytimes.
-var loadDelay = 500; //interval between clicking 'next' and seeing the face.
+var loadDelay = 500; //interval between clicking 'next' and seeing the face. (actually, presentation of the mask is this long, but there may also be some uncontrolled image loading time before the mask displays. Presentation time for the faces is protected from loading time variability)
 
 //TRAINING TASK
 //participant state info
@@ -36,7 +36,7 @@ function nextTrial(){
 	finishTraining();//finishTraining() is defined in 'preamble.js', because it's an admin/wrapper sort of thing.
     }
     else{
-	console.log("Showing: "+lineupID[trialcounter]+":"+faceID[trialcounter]+":"+lineups[lineupID[trialcounter]][faceID[trialcounter]]);
+//	console.log("Showing: "+lineupID[trialcounter]+":"+faceID[trialcounter]+":"+lineups[lineupID[trialcounter]][faceID[trialcounter]]);
 	expectation["lineup"+lineupID[trialcounter]]=faceID[trialcounter];
 	// studyStim(imgFile,targDiv,loadDelay,presentationTime)
 	new studyStim(lineups[lineupID[trialcounter]][faceID[trialcounter]],'uberdiv',loadDelay,displaytime[trialcounter]).init()
@@ -51,6 +51,7 @@ var inspection_intervals=[]; //Records time between test item loading and the ne
 var responses = []; //responses pushed here by teststim objects
 var trueanswers = []; //faceID's, pushed in the correct order at test
 var confRatings = [];
+var lineupSequence = [];
 var testCounter = 0;
 
 var testStimLoadTime; //set on init, inspection_interval is the difference between this and when 'next' is clicked.
@@ -60,11 +61,11 @@ if(testCounter==0){
     shuffle(lineupID); //shuffle once at the beginning of test (can't rely on page reload)
     loadTime = new Date().getTime();
 }
-console.log("test#"+testCounter);
+//console.log("test#"+testCounter);
 if(testCounter==lineupID.length)finishTest(); 
 else{
     //DIAG
-    console.log("Showing: "+lineupID[testCounter]+" expecting "+expectation["lineup"+lineupID[testCounter]]+":"+lineups[lineupID[testCounter]][expectation["lineup"+lineupID[testCounter]]]);
+//    console.log("Showing: "+lineupID[testCounter]+" expecting "+expectation["lineup"+lineupID[testCounter]]+":"+lineups[lineupID[testCounter]][expectation["lineup"+lineupID[testCounter]]]);
     //DIAG
     var thetruth = expectation["lineup"+lineupID[testCounter]];
 

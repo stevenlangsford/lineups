@@ -6,10 +6,11 @@ var loadTime = new Date().getTime(); //this loadTime is the start time for start
 function beginExp(){
     loadTime = new Date().getTime();
     lastClick=new Date().getTime();
+    document.getElementById("uberdiv").style.textAlign="center";
     nextTrial();//defined in 'task.js'
 }
 
-var instructionchapters = ["<p class=\"instructions\">Thank you for your interest in this study! Please read these instructions carefully, they will be followed by a short quiz</p>","<p class=\"instructions\">The study has two parts. In the first part, you'll be shown a collection of faces to remember. You'll be able to go through the faces at your own speed, but each face will only be shown for a limited amount of time.</p>","<p class=\"instructions\">Each time you click the 'next' button, a new face will be shown briefly. There are 40 faces to remember.</p>","<p class=\"instructions\">After the training there is a test of visual processing.</p>","<p class=\"instructions\">Two similar images will be flashed up on the screen separated by a white mask.<br/> Your task will be to find the element that is different between the two images and click on it. <br/> This task is placed here rather than at the beginning to introduce a gap between training and test.</p>","<p class=\"instructions\">In the second part of the study, you'll be given a series of lineup tasks to test your memory of the faces. You'll get feedback about your accuracy at the end.</p>","<p class=\"instructions\">On the next page, you'll be asked some questions about these instructions.</p><p class=\"instructions\">There are also a couple of demographics questions for our records.</p><p class=\"instructions\">The whole task is expected to take around 30~40 minutes.</p><p class=\"instructions\">This is part of a study being run by the University of Adelaide. By clicking 'Next', you are agreeing to take part in it. You should know that you're free to withdraw at any time (although you'll only be paid on completion), and that although data gained from this study may be published, you will not be identified and your personal details will not be divulged</p>.<p class=\"instructions\" style=\"font-size:.8em\">Please direct any questions about this study to the principle investigator, Dr. John Dunn (john.dunn@adelaide.edu.au). For any questions regarding the ethics of the study, please contact the convenor of the Subcommittee for Human Research in the School of Psychology at the University of Adelaide, Dr. Paul Delfabbro (+61)08 8313 4936.</p>"];
+var instructionchapters = ["<p class=\"instructions\">Thank you for your interest in this study! Please read these instructions carefully, they will be followed by a short quiz</p>","The study will take around 45 minutes. Please make sure you can have this time free of interruptions before beginning.","<p class=\"instructions\">The study has two parts. In the first part, you'll be shown a collection of faces to remember. You'll be able to go through the faces at your own speed, but each face will only be shown for a limited amount of time.</p>","<p class=\"instructions\">Each time you click the 'show face' button, a new face will be shown briefly. There are 40 faces to remember.</p>","<p class=\"instructions\">In the second part of the study, you'll be given a series of lineup tasks to test your memory of the faces. You'll get feedback about your accuracy at the end.</p>","<p class=\"instructions\">On the next page, you'll be asked some questions about these instructions.</p><p class=\"instructions\">There are also a couple of demographics questions for our records.</p><p class=\"instructions\">The whole task is expected to take around 30~45 minutes.</p><p class=\"instructions\">This is part of a study being run by the University of Adelaide. By clicking 'Next', you are agreeing to take part in it. You should know that you're free to withdraw at any time (although you'll only be paid on completion), and that although data gained from this study may be published, you will not be identified and your personal details will not be divulged</p>.<p class=\"instructions\" style=\"font-size:.8em\">Please direct any questions about this study to the principle investigator, Dr. John Dunn (john.dunn@adelaide.edu.au). For any questions regarding the ethics of the study, please contact the convenor of the Subcommittee for Human Research in the School of Psychology at the University of Adelaide, Dr. Paul Delfabbro (+61)08 8313 4936.</p>"];
 
 var instructioncounter = 0;
 
@@ -33,39 +34,40 @@ function instructions(){
 function instructionquiz(){
     scroll(0,0);
     //var plausible = [25,50,75,90];
+    document.getElementById("uberdiv").style.textAlign="left";
     document.getElementById("uberdiv").innerHTML="<h3>Are you ready?</h3><br/>"+
-	"<span style='text-align:left'><p>"+
+	"<span style='text-align:left'>"+
 	"<strong>What will you be asked to do in this first part of the study?</strong></br>"+
-	"<input type=\"radio\" name=\"value\" id=\"allthefaces\" value=\"rich\"/>&nbsp Keep clicking 'next' until you've seen all the faces.<br/>"+
+	"<input type=\"radio\" name=\"value\" id=\"allthefaces\" value=\"rich\"/>&nbsp Keep clicking the 'show face' button until you've seen all the faces.<br/>"+
 	"<input type=\"radio\" name=\"value\" id=\"bothsamegroup\" value=\"poor\"/>&nbsp Watch a short video of a mock crime scene.<br/>"+
 	"<input type=\"radio\" name=\"value\" id=\"both\" value=\"both\"/>&nbsp Memorize nonsense words.<br/>"+
 	"<input type=\"radio\" name=\"value\" id=\"neither\" value=\"neither\"/>&nbsp Report whether or not you recognize any of 40 faces presented.<br/></p>"+
 	"</span>"+
 
-    "<span style='text-align:left'>"+
-	"<p><strong>What is the spacer task separating the training and test phases?</strong></br>"+
-	"<input type=\"radio\" name=\"howsparse\" id=\"fifteenpc\" value=\"10\"/>&nbsp Sudoku<br/>"+
-	"<input type=\"radio\" name=\"howsparse\" id=\"howmanycats\" value=\"30\"/>&nbsp A reaction time task asking you to match different coloured shapes.<br/>"+
-	"<input type=\"radio\" name=\"howsparse\" id=\"tomorrow\" value=\"50\"/>&nbsp A visual-processing challenge where you click on the element that changes between two similar pictures.<br/>"+
-	"<input type=\"radio\" name=\"howsparse\" id=\"seventyfivepc\" value=\"70\"/>&nbsp A five minute break to get up and stretch your legs.<br/>"+
-	"<input type=\"radio\" name=\"howsparse\" id=\"ninetypc\" value=\"90\"/>&nbsp Trick question, the test phase immediately follows the training.<br/>"+
-	"</p>"+
-	"</span>"+
+    // "<span style='text-align:left'>"+
+    // 	"<strong>What is the spacer task separating the training and test phases?</strong></br>"+
+    // 	"<input type=\"radio\" name=\"howsparse\" id=\"fifteenpc\" value=\"10\"/>&nbsp Sudoku<br/>"+
+    // 	"<input type=\"radio\" name=\"howsparse\" id=\"howmanycats\" value=\"30\"/>&nbsp A reaction time task asking you to match different coloured shapes.<br/>"+
+    // 	"<input type=\"radio\" name=\"howsparse\" id=\"tomorrow\" value=\"50\"/>&nbsp A visual-processing challenge where you click on the element that changes between two similar pictures.<br/>"+
+    // 	"<input type=\"radio\" name=\"howsparse\" id=\"seventyfivepc\" value=\"70\"/>&nbsp A five minute break to get up and stretch your legs.<br/>"+
+    // 	"<input type=\"radio\" name=\"howsparse\" id=\"ninetypc\" value=\"90\"/>&nbsp Trick question, the test phase immediately follows the training.<br/>"+
+    // 	"</p>"+
+    // 	"</span>"+
 
     "<span style='text-align:left'>"+
-	"<p><strong>What will you be asked to do in the second part?</strong></br>"+
+	"<strong>What will you be asked to do in the second part?</strong></br>"+
 	"<input type=\"radio\" name=\"howsample\" id=\"timelimit\" value=\"time\"/>&nbsp Keep clicking 'next' until you've seen all the faces.<br/>"+
 	"<input type=\"radio\" name=\"howsample\" id=\"limfifty\" value=\"fifty\"/>&nbsp Answer questions about the short video presented in the first part<br/>"+
 	"<input type=\"radio\" name=\"howsample\" id=\"suibian\" value=\"suibian\"/>&nbsp List nonsense words memorized in the first part<br/>"+
 	"<input type=\"radio\" name=\"howsample\" id=\"lineups\" value=\"score\"/>&nbsp A series of mock lineups to see how well you remember the faces from the first part.<br/></p>"+
 	"</span>"+
 	"<span style='text-align:left'>"+
-	"<button onclick=\"quizvalidate()\">Begin!</button>";
+	"<button onclick=\"quizvalidate()\">Begin!</button></span>";
 }
 
 
 function quizvalidate(){
-    var valid=document.getElementById("allthefaces").checked && document.getElementById("tomorrow").checked && document.getElementById("lineups").checked;
+    var valid=document.getElementById("allthefaces").checked && document.getElementById("lineups").checked; //&& document.getElementById("tomorrow").checked
     if(valid){
 	demographics();
     }
@@ -93,11 +95,11 @@ function finishTraining(){
     saveData(dataObj);
     console.log("training data saved");
     //message:
-    document.getElementById("uberdiv").innerHTML="<p>That's all the faces!</p><p>The next stage is the visual processing task.</p><p>Two different images will be presented, separated by a white mask.</p><p>When you find the part of the image that changes between the two, click on it to move to the next image.</p><p>The differences can be quite subtle and hard to find, but they are there.</p><p>This part of the task should take about three minutes.</p><br/><button id=\"gotospacer\" onclick='goToSpacer()'>Continue</button>"; //three minutes of change-blindness is enough to drive anyone crazy
+    document.getElementById("uberdiv").innerHTML="<p>That's all the faces!</p><br/><button id=\"gotospacer\" onclick='goToSpacer()'>Continue</button>";
 }
 
 function goToSpacer(){//just because button onclick needs to refer to a toplevel named function apparently?
-    new spacerGame('uberdiv',3*60*1000).init();
+    new spacerGame('uberdiv',20*1000).init();
 }
 
 function finishTest(){
@@ -108,16 +110,14 @@ function finishTest(){
     var correctCount = 0;
     for(var i=0;i<lineupID.length;i++){
 	//ID, trialnumber, whichlineup (which can then be matched to training lineup to get which face&presentation time), response time, confidence
-
-
 	
-	if(trueanswers[i]==0&&responses[i]=="no"||condition=="mostlikely")correctCount++;
+	if(trueanswers[i]==0&&(responses[i]=="no"||condition=="mostlikely"))correctCount++;
 	else if(trueanswers[i]==responses[i])correctCount++;
 	else if(trueanswers[i]>0&&responses[i]=="yes")correctCount++;
 		
 		var correctAns=trueanswers[i];
 
-		var datline = ""+ppantID+","+i+","+(lineupID[i]+1)+","+condition+","+responses[i]+","+inspection_intervals[i]+","+confRatings[i]+","+trueanswers[i];
+		var datline = ""+ppantID+","+i+","+(lineupID[i]+1)+","+condition+","+responses[i]+","+inspection_intervals[i]+","+confRatings[i]+","+trueanswers[i]+","+lineupSequence[i];
 		dataObj.test.push(datline);
 	       }
 	saveData(dataObj);
@@ -490,7 +490,7 @@ function finishTest(){
     function gatekeeper(astring){
 	//vanilla random allocation of conditions
 	ppantID=Math.round(Math.random()*1000000);
-	condition = shuffle(["presentabsent","mostlikely","nominate"])[0];
+	condition = shuffle(["presentabsent","mostlikely","nominate"])[0]; //fixed for pilot, don't forget to change back!
 	instructions();
 
 	//fancy ID-controlled entry and allocation to conditions

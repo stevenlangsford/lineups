@@ -9,8 +9,7 @@
 //}
 
 
-//new spacerGame('uberdiv',5000).init() //spacer game
-
+//new spacerGame('uberdiv',30000).init() //spacer game
 
 
 //testIntro(); //test stim

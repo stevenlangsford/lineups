@@ -1,3 +1,10 @@
-idnumber,sex,vision,age,language,country,loadTime,screenwidth,screenheight,canvaswidth,canvasheight
-703004,female,normal,2,none,Australia,thy@hat.com,1415676254968,1366,768,199,249
-885252,male,normal,1,all of them,Australia,me@me.org,1415673772652,1366,768,199,249
+idnumber,sex,vision,age,language,country,email,loadTime,screenwidth,screenheight,canvaswidth,canvasheight
+670435,female,abnormal,23,english cantonese,Australia,andriana.tran@gmail.com,1415973284188,1920,1080,200,250
+140286,female,normal,27,cantonese english,Australia,jordinarymanne@hotmail.com,1416207072529,1455,818,200,250
+364701,female,normal,41,english,Australia,elizabeth.fontaine@adelaide.edu.au,1416271397665,1680,1050,200,250
+311259,male,normal,25,german,Australia,forab001@mymail.unisa.edu.au,1416195931117,1366,768,199,249
+45856,male,normal,28,english,Australia,brennan.ong11@gmail.com,1416206833004,1920,1080,200,250
+384466,female,normal,27,cantonese english,Australia,jordinarymanne@hotmail.com,1416207503055,1090,613,159,199
+107624,male,normal,24,english,Australia,benpugliese@hotmail.com,1415951364960,1440,900,200,250
+497583,female,normal,26,english,Australia,charlotte.scobie@adelaide.edu.au,1415848071719,1920,1080,200,250
+721823,male,normal,25,english,Australia,matthew.kaesler@student.adelaide.edu.au,1416007805871,1920,1080,200,250

@@ -68,7 +68,7 @@ function studyStim(imgFile,targDiv,loadDelay,presentationTime){
     }
 
     this.init= function(){//init is only contact with outside world
-	document.getElementById(targDiv).innerHTML="<div style=\"width:"+canvaswidth+"px; height:"+canvasheight+"px;clear:both; display:block;\"></div><br/><button onclick=nextButtonFn()>Next Face</button></br>";
+	document.getElementById(targDiv).innerHTML="<div style=\"width:"+canvaswidth+"px; height:"+canvasheight+"px;clear:both; display:block;\"></div><br/><button onclick=nextButtonFn()>Show Face</button></br>";
 	
 	nextButtonFn = function(){
 	    interstim_intervals.push(new Date().getTime()-lastClick);
@@ -80,6 +80,19 @@ function studyStim(imgFile,targDiv,loadDelay,presentationTime){
 }//end of studyStim-display object
 
 var testResponseFn; //At this level to be visible to buttons, function body set just-in-time by testStim objects
+function testfaceFn(whichcanvas,whichposition){
+//alert(whichcanvas+":"+whichposition);
+for(var i=0;i<6;i++){
+document.getElementById('uberdivcanvas'+i).style.border="none";
+}
+document.getElementById('uberdivcanvas'+whichcanvas).style.border="1px solid yellow";
+document.getElementById('response'+whichposition).checked=true;
+}
+function nomatchFn(){
+for(var i=0;i<6;i++){
+document.getElementById('uberdivcanvas'+i).style.border="none";
+}
+}
 
 function confratingFn(){
     if($('input[name="conf"]:checked').val()==undefined){
@@ -136,13 +149,14 @@ function testStim(lineupImgs,targDiv,condition){
     lineupTable+="</tr><tr>";
 
     var faceSeq = shuffle([0,1,2,3,4,5]);//This randomizes the order of the faces in the lineup.(assuming lineup length 6 here... meh)
-    
+    lineupSequence.push(faceSeq.slice());
+
     for(var i = 0;i<lineuplength;i++){
 	lineupTable+="<td>"+
-	    "<canvas id='"+targDiv+"canvas"+faceSeq[i]+"' height='"+canvasheight+"' width='"+canvaswidth+"'></canvas></br>";
+	    "<canvas id='"+targDiv+"canvas"+faceSeq[i]+"' height='"+canvasheight+"' width='"+canvaswidth+"' onclick='testfaceFn("+faceSeq[i]+","+i+")'></canvas></br>";
 	if(condition=="mostlikely"||condition=="nominate"){
-	    lineupTable+="Face "+(i+1)+"</br>";
-	    lineupTable+="<input type='radio' name='response' id='response"+i+"' value='"+(faceSeq[i]+1)+"'></td>"; //value in range 1-6 for selected faces. Value '0' (absent) exists in some conditions, but not from these face response buttons.
+	    //lineupTable+="Face "+(i+1)+"</br>";
+	    lineupTable+="<input type='radio' name='response' id='response"+i+"' value='"+(faceSeq[i]+1)+"' onclick='testfaceFn("+faceSeq[i]+","+i+")'></td>"; //value in range 1-6 for selected faces. Value '0' (absent) exists in some conditions, but not from these face response buttons.
 	}
 	lineupTable+="</td>";
 
@@ -154,8 +168,8 @@ function testStim(lineupImgs,targDiv,condition){
     if(condition=="presentabsent") {
 	lineupTable+="<tr>";
 	lineupTable+="<td colspan="+(lineupImgs.length/2)+">";
-	lineupTable+="<button onclick='testResponseFn(\"yes\")'>Yes</br>There is a face that was shown before in this lineup</button></h3>";
-	lineupTable+="<button onclick='testResponseFn(\"no\")'>No</br>There is no face that was shown before in this lineup</button></h3>";
+	lineupTable+="<button onclick='testResponseFn(\"yes\")' id='nextbutton1' disabled>Yes</br>There is a face that was shown before in this lineup</button></h3>";
+	lineupTable+="<button onclick='testResponseFn(\"no\")' id='nextbutton2' disabled>No</br>There is no face that was shown before in this lineup</button></h3>";
 	
 	testResponseFn=function(response){
 	    inspection_intervals.push(new Date().getTime()-testStimLoadTime);
@@ -167,10 +181,10 @@ function testStim(lineupImgs,targDiv,condition){
 
     if(condition=="mostlikely"||condition=="nominate"){
 	if(condition=="nominate"){
-	    lineupTable+="<tr><td colspan='"+(lineuplength/2)+"'>No match</br><input type='radio' name='response' id='response0' value='0'></td></tr>";	    
+	    lineupTable+="<tr><td colspan='"+(lineuplength/2)+"'>No match</br><input type='radio' name='response' id='response0' value='0' onclick='nomatchFn()'></td></tr>";	    
 	}
 	
-	lineupTable+="<tr><td colspan='"+lineuplength+"'><button onclick='testResponseFn()'>Next</button></tr>";
+	lineupTable+="<tr><td colspan='"+lineuplength+"'><button id='nextbutton' onclick='testResponseFn()' disabled>Next</button></tr>";
 	
 	testResponseFn=function(){
 	    
@@ -200,6 +214,11 @@ function testStim(lineupImgs,targDiv,condition){
 		for(var i=0;i<lineupImgs.length;i++){
 		    drawPic(imageObjs[i],targDiv+"canvas"+i);
 		}
+		if(condition=="presentabsent"){
+		    document.getElementById('nextbutton1').disabled=false;
+		    document.getElementById('nextbutton2').disabled=false;
+		}
+		else document.getElementById('nextbutton').disabled=false;
 	    }
 	}
 	
@@ -218,142 +237,162 @@ function testStim(lineupImgs,targDiv,condition){
     }//end init
 }//end testStim
 
-var spacerGameFn;//Top level to be visible to buttons, body set just in time by spacerGame objects
+function spacerGame(targDiv,runningTime){
+    var starttime;
 
-function spacerGame(targDiv,runningTime){//runningTime is in millis. Current game is change-blindness
-    var path = "spacer_imgs/";
-    var suffix = ".jpg";
-
-    function imgdata(name,x1,y1,x2,y2){
-	this.name=name;
-	this.x=x1;
-	this.y=y1;
-	this.width=x2-x1;
-	this.height=y2-y1;
+    function update(){
+	document.getElementById(targDiv).innerHTML="<h1> Test phase starting in "+Math.round((starttime+runningTime-new Date().getTime())/1000)+" seconds</h1>"
+	if(starttime+runningTime<new Date().getTime()){testIntro(); return;}
+	else {
+	    setTimeout(function(){update();},1000);
+	}
     }
-    var imglist = [new imgdata("Alley",91,93,125,254),new imgdata("Building",73,7,398,180),new imgdata("Canal",67,15,110,56),new imgdata("ChurchFront",170,90,267,172),new imgdata("Climber",113,227,176,316),new imgdata("Dorsay",178,43,229,145),new imgdata("Flowers",300,130,479,173),new imgdata("FlowerStairs",374,466,448,526),new imgdata("GrandCanal",127,251,216,334),new imgdata("Jardin",424,15,457,134),new imgdata("NotreDame",335,179,367,241),new imgdata("Plaza",255,137,318,166),new imgdata("Pope",306,334,398,471),new imgdata("Sailboat",0,0,76,251),new imgdata("Statue",154,340,194,373)];//all files are [name][1,2].jpg
+    
+    this.init = function(){
+	starttime = new Date().getTime();
+	update();
+    }//end init
+    
+}//end spacer
 
-    var imgcounter = 0;
+//Change blindness spacer
+// var spacerGameFn;//Top level to be visible to buttons, body set just in time by spacerGame objects
+// function spacerGame(targDiv,runningTime){//runningTime is in millis. Current game is change-blindness
+//     var path = "spacer_imgs/";
+//     var suffix = ".jpg";
 
-    document.getElementById(targDiv)
+//     function imgdata(name,x1,y1,x2,y2){
+// 	this.name=name;
+// 	this.x=x1;
+// 	this.y=y1;
+// 	this.width=x2-x1;
+// 	this.height=y2-y1;
+//     }
+//     var imglist = [new imgdata("Alley",91,93,125,254),new imgdata("Building",73,7,398,180),new imgdata("Canal",67,15,110,56),new imgdata("ChurchFront",170,90,267,172),new imgdata("Climber",113,227,176,316),new imgdata("Dorsay",178,43,229,145),new imgdata("Flowers",300,130,479,173),new imgdata("FlowerStairs",374,466,448,526),new imgdata("GrandCanal",127,251,216,334),new imgdata("Jardin",424,15,457,134),new imgdata("NotreDame",335,179,367,241),new imgdata("Plaza",255,137,318,166),new imgdata("Pope",306,334,398,471),new imgdata("Sailboat",0,0,76,251),new imgdata("Statue",154,340,194,373)];//all files are [name][1,2].jpg
 
-    this.init=function(){
-	var startTime = new Date().getTime();
+//     var imgcounter = 0;
 
-	function nextScene(){
-	    imgcounter = (imgcounter+1)%imglist.length;
-	    listenerlayer=new Kinetic.Layer();
-	    loadScene();
-	}
+//     document.getElementById(targDiv)
+
+//     this.init=function(){
+// 	var startTime = new Date().getTime();
+
+// 	function nextScene(){
+// 	    imgcounter = (imgcounter+1)%imglist.length;
+// 	    listenerlayer=new Kinetic.Layer();
+// 	    loadScene();
+// 	}
 	
-	function go(){
-	    if(new Date().getTime()-startTime>runningTime){
-		testIntro();//defined in preamble.js
-     		return;
-            }
+// 	function go(){
+// 	    if(new Date().getTime()-startTime>runningTime){
+// 		testIntro();//defined in preamble.js
+//      		return;
+//             }
 
-	    nextLayer();
-	    setTimeout(function(){go()},800);
-	}
-	function nextLayer(){
-	    //	    layerlist[currentlayer].setZIndex(1);
-	    layerlist[currentlayer].moveToTop();
-	    listenerlayer.moveToTop();
+// 	    nextLayer();
+// 	    setTimeout(function(){go()},800);
+// 	}
+// 	function nextLayer(){
+// 	    //	    layerlist[currentlayer].setZIndex(1);
+// 	    layerlist[currentlayer].moveToTop();
+// 	    listenerlayer.moveToTop();
 	    
-	    layerlist[currentlayer].draw();
-	    currentlayer=(currentlayer+1)%layerlist.length;
-	}
+// 	    layerlist[currentlayer].draw();
+// 	    currentlayer=(currentlayer+1)%layerlist.length;
+// 	}
 
-	    var layer1 = new Kinetic.Layer();
-	    var masklayer = new Kinetic.Layer();
-	    var layer2 = new Kinetic.Layer();
-	    var listenerlayer = new Kinetic.Layer();
+// 	    var layer1 = new Kinetic.Layer();
+// 	    var masklayer = new Kinetic.Layer();
+// 	    var layer2 = new Kinetic.Layer();
+// 	    var listenerlayer = new Kinetic.Layer();
 
-	    var layerlist = [masklayer,layer1,masklayer,layer2];
-	    var currentlayer=0;
+// 	    var layerlist = [masklayer,layer1,masklayer,layer2];
+// 	    var currentlayer=0;
 
-	function loadScene(){
-	    var stage = new Kinetic.Stage({
-		container: targDiv,
-		width: 480,
-		height: 550
-	    });
+// 	function loadScene(){
+// 	    var stage = new Kinetic.Stage({
+// 		container: targDiv,
+// 		width: 480,
+// 		height: 550
+// 	    });
 
-	    stage.on('click',function(){
-		pos = stage.getPointerPosition();
-	    });
+// 	    stage.on('click',function(){
+// 		pos = stage.getPointerPosition();
+// 	    });
 
-	    var imageObj1 = new Image();
-	    var imageObj2 = new Image();
+// 	    var imageObj1 = new Image();
+// 	    var imageObj2 = new Image();
 	    
-	    var maskrect = new Kinetic.Rect({
-		x: 0,
-		y: 0,
-		width: 480,
-		height: 550,
-		fill: 'white',
-		stroke: 'black',
-		strokeWidth: 4
-	    });
+// 	    var maskrect = new Kinetic.Rect({
+// 		x: 0,
+// 		y: 0,
+// 		width: 480,
+// 		height: 550,
+// 		fill: 'white',
+// 		stroke: 'black',
+// 		strokeWidth: 4
+// 	    });
 
 	    
-	    imageObj1.onload = function() {
-		imageObj2.src = imgsrc2; //set in img1 onload to guarantee load order: when img2 load completes you're good to go.
-	    };
+// 	    imageObj1.onload = function() {
+// 		imageObj2.src = imgsrc2; //set in img1 onload to guarantee load order: when img2 load completes you're good to go.
+// 	    };
 	    
-	    imageObj2.onload = function(){
-		var img1 = new Kinetic.Image({
-		    x: 0,
-		    y: 0,
-		    image: imageObj1,
-		    width: 480,
-		    height: 550
-		});
+// 	    imageObj2.onload = function(){
+// 		var img1 = new Kinetic.Image({
+// 		    x: 0,
+// 		    y: 0,
+// 		    image: imageObj1,
+// 		    width: 480,
+// 		    height: 550
+// 		});
 
-		var img2 = new Kinetic.Image({
-		    x: 0,
-		    y: 0,
-		    image: imageObj2,
-		    width: 480,
-		    height: 550
-		});
-
-
-		var listenerRect = new Kinetic.Rect({
-		    x: imglist[imgcounter].x,
-		    y: imglist[imgcounter].y,
-		    width: imglist[imgcounter].width,
-		    height: imglist[imgcounter].height,
-		    fill: null,
-		    stroke: null,//invisible box
-		    strokeWidth: 4
-		});
-		listenerRect.on('click',function(){
-		    nextScene();
-		});
-		masklayer.add(maskrect);
-		listenerlayer.add(listenerRect);
+// 		var img2 = new Kinetic.Image({
+// 		    x: 0,
+// 		    y: 0,
+// 		    image: imageObj2,
+// 		    width: 480,
+// 		    height: 550
+// 		});
 
 
-		// add the shape to the layer
-		layer1.add(img1);
-		layer2.add(img2);
+// 		var listenerRect = new Kinetic.Rect({
+// 		    x: imglist[imgcounter].x,
+// 		    y: imglist[imgcounter].y,
+// 		    width: imglist[imgcounter].width,
+// 		    height: imglist[imgcounter].height,
+// 		    fill: null,
+// 		    stroke: null,//invisible box
+// 		    strokeWidth: 4
+// 		});
+// 		listenerRect.on('click',function(){
+// 		    nextScene();
+// 		});
+// 		masklayer.add(maskrect);
+// 		listenerlayer.add(listenerRect);
 
-		// add the layer to the stage
-		stage.add(layer1);
-		stage.add(layer2);
-		stage.add(masklayer);
-		stage.add(listenerlayer);
-	    }//end img2 onload: good to go
-	    var imgsrc1 = path+imglist[imgcounter].name+"1.jpg";
-	    var imgsrc2 = path+imglist[imgcounter].name+"2.jpg";
-	    imageObj1.src = imgsrc1;
-	}//end loadScene
-	loadScene();//first load
-	go();
-    }//end init function
 
-    //word nonword game (tedious)
+// 		// add the shape to the layer
+// 		layer1.add(img1);
+// 		layer2.add(img2);
+
+// 		// add the layer to the stage
+// 		stage.add(layer1);
+// 		stage.add(layer2);
+// 		stage.add(masklayer);
+// 		stage.add(listenerlayer);
+// 	    }//end img2 onload: good to go
+// 	    var imgsrc1 = path+imglist[imgcounter].name+"1.jpg";
+// 	    var imgsrc2 = path+imglist[imgcounter].name+"2.jpg";
+// 	    imageObj1.src = imgsrc1;
+// 	}//end loadScene
+// 	loadScene();//first load
+// 	go();
+//     }//end init function
+
+
+    //word nonword spacer
+
     // var displaytime = 1000;
     // var startTime;
 
@@ -431,5 +470,4 @@ function spacerGame(targDiv,runningTime){//runningTime is in millis. Current gam
     //     spacerGameFn=instructions;
     //     instructions();
     // }
-
-}
+//}
